@@ -1,7 +1,7 @@
-import AIAnalysis from "../../components/AIAnalysis"
-import TradeAnalysis from "../../components/TradeAnalysis"
+import AIAnalysis from "../../../components/AIAnalysis"
+import TradeAnalysis from "../../../components/TradeAnalysis"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { getTrades } from "../../lib/trades"
+import { getTrades } from "../../../lib/trades"
 
 export default async function AnalysisPage() {
   const trades = await getTrades()
