@@ -14,7 +14,8 @@ const PORT = process.env.PORT || 5000
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://trade-tracker-wheat.vercel.app', // replace with your actual Vercel URL
+    'https://trade-tracker-wheat.vercel.app',
+    'https://trade-tracker-1yxm.vercel.app',
   ],
   credentials: true
 }))
