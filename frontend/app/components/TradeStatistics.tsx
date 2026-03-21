@@ -47,7 +47,7 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
         lossCount++
         grossLoss -= profit
         currentStreak = currentStreak < 0 ? currentStreak - 1 : -1
-        longestLoseStreak = Math.min(longestLoseStreak, currentStreak)
+        longestLoseStreak = Math.max(longestLoseStreak, Math.abs(currentStreak))
       }
 
       if (totalProfit > peak) {
@@ -58,7 +58,7 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
       }
 
       // Calculate pips for forex trades
-      if (trade.type === "forex") {
+      if (trade.tradeType === "forex") {
         const pipValue = trade.symbol.includes("JPY") ? 0.01 : 0.0001
         totalPips += Math.abs(Number(trade.exitPrice) - Number(trade.entryPrice)) / pipValue
       }
@@ -67,12 +67,13 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
       profitBySymbol[trade.symbol] = (profitBySymbol[trade.symbol] || 0) + profit
 
       // Trades by day
-      const tradeDate = new Date(trade.date).toISOString().split("T")[0]
+      const tradeDate = new Date(trade.entryDate).toISOString().split("T")[0]
       tradesByDay[tradeDate] = (tradesByDay[tradeDate] || 0) + 1
     })
 
-    const winRate = winCount / (winCount + lossCount)
-    profitFactor = grossProfit / grossLoss
+    const totalTrades = winCount + lossCount
+    const winRate = totalTrades > 0 ? winCount / totalTrades : 0
+    profitFactor = grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? Infinity : 0
 
     return {
       totalProfit,
@@ -81,11 +82,11 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
       longestWinStreak,
       longestLoseStreak,
       totalPips: totalPips.toFixed(1),
-      profitFactor: profitFactor.toFixed(2),
+      profitFactor: isFinite(profitFactor) ? profitFactor.toFixed(2) : "∞",
       profitBySymbol,
       tradesByDay,
       totalTrades: filteredTrades.length,
-      averageProfit: totalProfit / filteredTrades.length,
+      averageProfit: filteredTrades.length > 0 ? totalProfit / filteredTrades.length : 0,
     }
   }
 
@@ -108,7 +109,7 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
     }
 
     return trades.filter(
-      (trade) => (period === "all" || new Date(trade.date) >= periodStart) && (type === "all" || trade.type === type),
+      (trade) => (period === "all" || new Date(trade.entryDate) >= periodStart) && (type === "all" || trade.tradeType=== type),
     )
   }
 
@@ -208,7 +209,7 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
             <CardTitle className="text-sm font-medium">Longest Lose Streak</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{Math.abs(stats.longestLoseStreak)}</div>
+            <div className="text-2xl font-bold">{stats.longestLoseStreak}</div>
           </CardContent>
         </Card>
       </div>
@@ -226,7 +227,7 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
         <CardHeader>
           <CardTitle>Profit by Symbol</CardTitle>
           <CardDescription>Total profit for each traded symbol</CardDescription>
-        </CardHeader>tradesByDayData
+        </CardHeader>
         <CardContent>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">

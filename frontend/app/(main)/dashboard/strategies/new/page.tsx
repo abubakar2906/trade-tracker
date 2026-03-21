@@ -1,4 +1,3 @@
-// app/dashboard/strategies/new/page.tsx
 import StrategyForm from "@/components/ui/StrategyForm";
 
 export default function NewStrategyPage() {

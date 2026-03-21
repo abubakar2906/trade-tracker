@@ -53,7 +53,7 @@ export default function TradeAnalysis({ trades }: TradeAnalysisProps) {
       }
 
       // Calculate pips for forex trades
-      if (trade.type === "forex") {
+      if (trade.tradeType === "forex") {
         const pipValue = trade.symbol.includes("JPY") ? 0.01 : 0.0001
         pips += Math.abs(Number(trade.exitPrice) - Number(trade.entryPrice)) / pipValue
       }
@@ -92,7 +92,7 @@ export default function TradeAnalysis({ trades }: TradeAnalysisProps) {
     }
 
     return trades.filter(
-      (trade) => (period === "all" || new Date(trade.date) >= periodStart) && (type === "all" || trade.type === type),
+      (trade) => (period === "all" || new Date(trade.entryDate) >= periodStart) && (type === "all" || trade.tradeType === type),
     )
   }
 

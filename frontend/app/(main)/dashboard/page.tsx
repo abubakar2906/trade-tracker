@@ -1,10 +1,51 @@
+"use client"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { BarChart2, PieChart, TrendingUp, DollarSign } from "lucide-react"
 import RecentTrades from "../../components/RecentTrades"
+import { getTrades } from "../../lib/trades"
 
 export default function Dashboard() {
+  const [stats, setStats] = useState({
+    totalTrades: 0,
+    winRate: 0,
+    profitFactor: 0,
+    totalProfit: 0,
+  })
+
+  useEffect(() => {
+    getTrades().then((trades: any[]) => {
+      const totalTrades = trades.length
+      let wins = 0
+      let grossProfit = 0
+      let grossLoss = 0
+      let totalProfit = 0
+
+      trades.forEach((trade) => {
+        const pl = Number(trade.profitLoss ?? 0)
+        totalProfit += pl
+        if (pl > 0) {
+          wins++
+          grossProfit += pl
+        } else {
+          grossLoss += Math.abs(pl)
+        }
+      })
+
+      const winRate = totalTrades > 0 ? (wins / totalTrades) * 100 : 0
+      const profitFactor = grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? Infinity : 0
+
+      setStats({
+        totalTrades,
+        winRate,
+        profitFactor,
+        totalProfit,
+      })
+    }).catch(console.error)
+  }, [])
+
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -15,8 +56,8 @@ export default function Dashboard() {
             <BarChart2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">128</div>
-            <p className="text-xs text-muted-foreground">+14% from last month</p>
+            <div className="text-2xl font-bold">{stats.totalTrades}</div>
+            <p className="text-xs text-muted-foreground">All time</p>
           </CardContent>
         </Card>
         <Card>
@@ -25,8 +66,8 @@ export default function Dashboard() {
             <PieChart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">62%</div>
-            <p className="text-xs text-muted-foreground">+5% from last month</p>
+            <div className="text-2xl font-bold">{stats.winRate.toFixed(1)}%</div>
+            <p className="text-xs text-muted-foreground">All time</p>
           </CardContent>
         </Card>
         <Card>
@@ -35,8 +76,10 @@ export default function Dashboard() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1.8</div>
-            <p className="text-xs text-muted-foreground">+0.3 from last month</p>
+            <div className="text-2xl font-bold">
+              {isFinite(stats.profitFactor) ? stats.profitFactor.toFixed(2) : "∞"}
+            </div>
+            <p className="text-xs text-muted-foreground">All time</p>
           </CardContent>
         </Card>
         <Card>
@@ -45,8 +88,10 @@ export default function Dashboard() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$12,543</div>
-            <p className="text-xs text-muted-foreground">+18% from last month</p>
+            <div className={`text-2xl font-bold ${stats.totalProfit >= 0 ? "text-green-500" : "text-red-500"}`}>
+              ${stats.totalProfit.toFixed(2)}
+            </div>
+            <p className="text-xs text-muted-foreground">All time</p>
           </CardContent>
         </Card>
       </div>
@@ -68,4 +113,3 @@ export default function Dashboard() {
     </div>
   )
 }
-

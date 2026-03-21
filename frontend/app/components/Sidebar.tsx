@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Home, BarChart2, PieChart, Settings, Menu, TrendingUp, FileText, NotebookPen } from "lucide-react"
+import { Home, BarChart2, PieChart, Settings, Menu, TrendingUp, FileText, NotebookPen, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
@@ -11,7 +11,9 @@ const navItems = [
   { name: "Trades", href: "/dashboard/trades", icon: BarChart2 },
   { name: "Strategies", href: "/dashboard/strategies", icon: NotebookPen },
   { name: "Report", href: "/report", icon: FileText },
+  { name: "Profile", href: "/profile", icon: User },
 ]
+
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false)

@@ -1,21 +1,17 @@
-// app/dashboard/strategies/page.tsx
+"use client"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { PlusCircle, Edit3, BookOpen } from "lucide-react"
-// TODO: Define StrategyType and fetch strategies
-// import { StrategyType } from "@/types/strategy";
-// import { getStrategies } from "@/lib/strategies";
+import { apiFetch } from "../../../lib/api"
 
-// Mock data for now
-const mockStrategies = [
-  { id: "1", name: "Mean Reversion Scalp", description: "Scalping strategy based on short-term mean reversion on 5-min chart.", tradesCount: 15, lastJournalEntry: "2024-07-15" },
-  { id: "2", name: "Breakout Momentum", description: "Trading breakouts on high volume for momentum continuation.", tradesCount: 8, lastJournalEntry: "2024-07-10" },
-];
+export default function StrategiesPage() {
+  const [strategies, setStrategies] = useState<any[]>([])
 
-export default async function StrategiesPage() {
-  // const strategies: StrategyType[] = await getStrategies(); // TODO: Implement this
-  const strategies = mockStrategies; // Using mock for now
+  useEffect(() => {
+    apiFetch("/api/strategies").then(setStrategies).catch(console.error)
+  }, [])
 
   return (
     <div className="space-y-8">
@@ -32,8 +28,8 @@ export default async function StrategiesPage() {
         <Card>
           <CardContent className="pt-6">
             <p className="text-center text-muted-foreground">
-              You haven't created any strategies yet.
-              <Link href="/dashboard/strategies/new" className="text-primary underline ml-1">
+              You haven't created any strategies yet.{" "}
+              <Link href="/dashboard/strategies/new" className="text-primary underline">
                 Create your first one!
               </Link>
             </p>
@@ -50,8 +46,15 @@ export default async function StrategiesPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p className="text-sm text-muted-foreground">Trades Logged: {strategy.tradesCount}</p>
-                <p className="text-sm text-muted-foreground">Last Journal: {strategy.lastJournalEntry || "N/A"}</p>
+                <p className="text-sm text-muted-foreground">
+                  Trades Logged: {strategy.journalEntries?.length ?? 0}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Last Journal:{" "}
+                  {strategy.journalEntries?.length > 0
+                    ? new Date(strategy.journalEntries[0].date).toLocaleDateString()
+                    : "N/A"}
+                </p>
               </CardContent>
               <CardFooter className="flex justify-end space-x-2">
                 <Button variant="outline" size="sm" asChild>

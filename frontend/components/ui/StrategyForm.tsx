@@ -1,4 +1,3 @@
-// components/StrategyForm.tsx
 "use client";
 
 import { useState, useEffect } from "react"
@@ -8,36 +7,34 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-// TODO: Define StrategyType
-// import { StrategyType } from "@/types/strategy"
+import { apiFetch } from "../../app/lib/api"
 
 interface StrategyFormProps {
-  initialData?: any; // Replace 'any' with StrategyType
+  initialData?: any;
   strategyId?: string;
 }
 
-// Trader Insight: Key elements of a strategy definition
 const defaultStrategy = {
   name: "",
   description: "",
-  assetClasses: [], // e.g., ["Crypto", "Forex", "Stocks"]
-  indicatorsUsed: "", // Comma-separated or structured
-  timeframes: "", // e.g., "5min, 1H, Daily"
+  assetClasses: [],
+  indicatorsUsed: "",
+  timeframes: "",
   entryRules: "",
   exitRules: "",
-  riskManagement: "", // e.g., "1% risk per trade, max 3 open positions"
-  notes: "", // General notes about the strategy
+  riskManagement: "",
+  notes: "",
 };
 
 export default function StrategyForm({ initialData, strategyId }: StrategyFormProps) {
   const [strategy, setStrategy] = useState(initialData || defaultStrategy);
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
   const router = useRouter();
   const isEditing = !!strategyId;
 
   useEffect(() => {
-    if (initialData) {
-      setStrategy(initialData);
-    }
+    if (initialData) setStrategy(initialData);
   }, [initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -45,28 +42,24 @@ export default function StrategyForm({ initialData, strategyId }: StrategyFormPr
     setStrategy((prev: any) => ({ ...prev, [name]: value }));
   };
 
-  // TODO: Handle assetClasses (e.g., with checkboxes or multi-select)
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: API call to save/update strategy
-    // const endpoint = isEditing ? `/api/strategies/${strategyId}` : "/api/strategies";
-    // const method = isEditing ? "PUT" : "POST";
-    // const response = await fetch(endpoint, {
-    //   method,
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(strategy),
-    // });
-
-    // if (response.ok) {
-    //   router.push("/dashboard/strategies");
-    //   router.refresh();
-    // } else {
-    //   // Handle error
-    //   console.error("Failed to save strategy");
-    // }
-    console.log("Strategy form submitted:", strategy);
-    router.push("/dashboard/strategies"); // Navigate back for now
+    setLoading(true)
+    setError("")
+    try {
+      const endpoint = isEditing ? `/api/strategies/${strategyId}` : "/api/strategies";
+      const method = isEditing ? "PUT" : "POST";
+      await apiFetch(endpoint, {
+        method,
+        body: JSON.stringify(strategy),
+      });
+      router.push("/dashboard/strategies");
+      router.refresh();
+    } catch (err: any) {
+      setError(err.message || "Failed to save strategy")
+    } finally {
+      setLoading(false)
+    }
   };
 
   return (
@@ -87,12 +80,15 @@ export default function StrategyForm({ initialData, strategyId }: StrategyFormPr
             <Label htmlFor="description">Description</Label>
             <Textarea id="description" name="description" value={strategy.description} onChange={handleChange} placeholder="Brief overview of the strategy" />
           </div>
-          {/* Trader Insight: These fields are crucial for a well-defined strategy */}
           <div className="space-y-2">
             <Label htmlFor="assetClasses">Asset Classes (comma-separated)</Label>
-            <Input id="assetClasses" name="assetClasses" value={strategy.assetClasses.join(", ")} 
-                   onChange={(e) => setStrategy((prev:any) => ({...prev, assetClasses: e.target.value.split(',').map(s => s.trim())}))} 
-                   placeholder="e.g., Crypto, Forex, Stocks" />
+            <Input
+              id="assetClasses"
+              name="assetClasses"
+              value={(strategy.assetClasses ?? []).join(", ")}
+              onChange={(e) => setStrategy((prev: any) => ({ ...prev, assetClasses: e.target.value.split(",").map((s: string) => s.trim()) }))}
+              placeholder="e.g., Crypto, Forex, Stocks"
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="indicatorsUsed">Indicators Used</Label>
@@ -107,7 +103,7 @@ export default function StrategyForm({ initialData, strategyId }: StrategyFormPr
             <Textarea id="entryRules" name="entryRules" value={strategy.entryRules} onChange={handleChange} placeholder="Specific conditions for entering a trade" rows={4} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="exitRules">Exit Rules (Profit Taking & Stop Loss)</Label>
+            <Label htmlFor="exitRules">Exit Rules</Label>
             <Textarea id="exitRules" name="exitRules" value={strategy.exitRules} onChange={handleChange} placeholder="Specific conditions for exiting a trade (TP and SL)" rows={4} />
           </div>
           <div className="space-y-2">
@@ -118,8 +114,11 @@ export default function StrategyForm({ initialData, strategyId }: StrategyFormPr
             <Label htmlFor="notes">General Notes</Label>
             <Textarea id="notes" name="notes" value={strategy.notes} onChange={handleChange} placeholder="Any other relevant information or observations" rows={3} />
           </div>
+          {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex justify-end">
-            <Button type="submit">{isEditing ? "Save Changes" : "Create Strategy"}</Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Saving..." : isEditing ? "Save Changes" : "Create Strategy"}
+            </Button>
           </div>
         </form>
       </CardContent>

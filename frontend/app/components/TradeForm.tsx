@@ -1,46 +1,44 @@
-// components/TradeForm.tsx
 "use client";
 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useState, useTransition, useEffect } from "react"; // useEffect was missing in your provided file
-
-import { TradeSchema, TradeFormValues } from "../types/trade"; // Ensure this path is correct
-import { addTradeAction, ActionResponse } from "../lib/actions"; // Ensure this path is correct
-
+import { z } from "zod";
+import { apiFetch } from "../lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// Label is not directly used when using FormField's FormLabel, but good to keep if you have other uses
-// import { Label } from "@/components/ui/label"; 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+  Select, SelectContent, SelectItem,
+  SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import {
+  Form, FormControl, FormField,
+  FormItem, FormLabel, FormMessage,
 } from "@/components/ui/form";
-// import { toast } from "sonner"; // Example for Sonner toasts
+import { Card, CardContent } from "@/components/ui/card";
+import { TrendingUp, TrendingDown, DollarSign, Target } from "lucide-react";
 
-// --- Constants ---
-const NO_SELECTION_VALUE = "__NONE__"; // For "None" or placeholder-like options in Select
+const TradeSchema = z.object({
+  symbol: z.string().min(1, "Symbol is required"),
+  tradeType: z.string().min(1, "Trade type is required"),
+  action: z.enum(["buy", "sell"]),
+  entryPrice: z.coerce.number().positive("Must be positive"),
+  exitPrice: z.coerce.number().positive().optional().or(z.literal("")),
+  quantity: z.coerce.number().positive("Must be positive"),
+  amountInvested: z.coerce.number().positive().optional().or(z.literal("")),
+  stopLoss: z.coerce.number().positive().optional().or(z.literal("")),
+  takeProfit: z.coerce.number().positive().optional().or(z.literal("")),
+  entryDate: z.string().min(1, "Entry date is required"),
+  exitDate: z.string().optional(),
+  emotionalState: z.string().optional(),
+  notes: z.string().optional(),
+  status: z.enum(["open", "closed"]),
+});
 
-// --- Mock Data (Replace with fetched data or props in a real app) ---
-const mockStrategies = [
-  { id: "strat1", name: "Mean Reversion Scalp" },
-  { id: "strat2", name: "Breakout Momentum" },
-  { id: "strat3", name: "Trend Following Swing" },
-];
+type TradeFormValues = z.infer<typeof TradeSchema>;
 
 const symbolOptions: Record<string, string[]> = {
   crypto: ["BTC/USD", "ETH/USD", "XRP/USD", "LTC/USD", "ADA/USD"],
@@ -50,124 +48,183 @@ const symbolOptions: Record<string, string[]> = {
   options: ["SPY C", "SPY P", "QQQ C", "QQQ P"],
 };
 
-export default function TradeForm() {
+const emotionalStates = [
+  "Confident", "Anxious", "FOMO", "Disciplined",
+  "Revenge Trading", "Neutral", "Excited", "Fearful",
+];
+
+export default function TradeForm({ onSuccess }: { onSuccess?: () => void }) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [actionFeedback, setActionFeedback] = useState<{ type: 'error' | 'success'; message: string } | null>(null);
-  // Removed selectedTradeType state, will rely on form.watch("type")
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [symbolList, setSymbolList] = useState<string[]>([]);
+  const [preview, setPreview] = useState<{
+    pnl: number | null;
+    rrRatio: number | null;
+    percentageGain: number | null;
+    risk: number | null;
+  }>({ pnl: null, rrRatio: null, percentageGain: null, risk: null });
 
   const form = useForm<TradeFormValues>({
     resolver: zodResolver(TradeSchema),
     defaultValues: {
-      symbol: "", // Default to empty string, Select will show placeholder
-      entryPrice: undefined,
-      exitPrice: undefined,
-      stopLoss: undefined,
-      takeProfit: undefined, // Keep if in schema, otherwise remove
-      quantity: undefined,
-      date: new Date().toISOString().split("T")[0],
-      type: "forex",
+      symbol: "",
+      tradeType: "forex",
       action: "buy",
-      strategyId: null, // Use null to represent "no strategy"
-      rationale: "",
-      tags: [],
+      entryPrice: "" as any,
+      exitPrice: "",
+      quantity: "" as any,
+      amountInvested: "",
+      stopLoss: "",
+      takeProfit: "",
+      entryDate: new Date().toISOString().split("T")[0],
+      exitDate: "",
+      emotionalState: "",
+      notes: "",
+      status: "open",
     },
   });
 
-  const onSubmit = (values: TradeFormValues) => {
-    setActionFeedback(null);
-    startTransition(async () => {
-      try {
-        const processedValues = {
-          ...values,
-          tags: Array.isArray(values.tags)
-            ? values.tags.filter(tag => typeof tag === 'string' && tag.trim() !== '')
-            : (typeof values.tags === 'string' && values.tags.trim() !== '')
-              ? values.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
-              : [],
-          // strategyId is already null if NO_SELECTION_VALUE was chosen and handled by onValueChange
-        };
-
-        const result: ActionResponse = await addTradeAction(processedValues);
-
-        if (result.success) {
-          setActionFeedback({ type: 'success', message: result.message || "Trade added successfully!" });
-          // toast.success(result.message || "Trade added successfully!");
-          form.reset();
-          router.refresh();
-        } else {
-          setActionFeedback({ type: 'error', message: result.message || "An unknown error occurred." });
-          if (result.errors) {
-            result.errors.forEach(err => {
-              const fieldName = err.path.join('.') as keyof TradeFormValues;
-              form.setError(fieldName, { message: err.message });
-            });
-          }
-          // toast.error(result.message || "Failed to add trade.");
-        }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred.";
-        setActionFeedback({ type: 'error', message: "Submission failed: " + errorMessage });
-        // toast.error("Submission failed. Please try again.");
-      }
-    });
-  };
-
-  const watchedTradeType = form.watch("type");
-  const [currentSymbolOptions, setCurrentSymbolOptions] = useState<string[]>([]);
+  const watched = form.watch();
 
   useEffect(() => {
-    // Update symbol options when trade type changes
-    const newOptions = symbolOptions[watchedTradeType as keyof typeof symbolOptions] || [];
-    setCurrentSymbolOptions(newOptions);
-    
-    // Reset symbol field only if the type has actually changed from its previous value
-    // This prevents resetting if the component re-renders but type hasn't changed
-    if (form.getValues("type") === watchedTradeType) {
-        // Check if the current symbol is valid for the new type, if not, reset
-        const currentSymbol = form.getValues("symbol");
-        if (currentSymbol && !newOptions.includes(currentSymbol)) {
-            form.setValue("symbol", "", { shouldValidate: true });
-        } else if (!currentSymbol && newOptions.length > 0) {
-            // If no symbol is set and there are options, no need to reset to empty
-        } else if (newOptions.length === 0) {
-             form.setValue("symbol", "", { shouldValidate: true });
-        }
+    const options = symbolOptions[watched.tradeType] || [];
+    setSymbolList(options);
+    const currentSymbol = form.getValues("symbol");
+    if (currentSymbol && !options.includes(currentSymbol)) {
+      form.setValue("symbol", "");
     }
-  }, [watchedTradeType, form]);
+  }, [watched.tradeType]);
 
-  const handleNumberInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    fieldChange: (value: number | undefined) => void
-  ) => {
-    const val = e.target.value;
-    fieldChange(val === '' ? undefined : parseFloat(val));
+  useEffect(() => {
+    const { entryPrice, exitPrice, quantity, amountInvested, stopLoss, takeProfit, action } = watched;
+
+    const ep = Number(entryPrice);
+    const xp = Number(exitPrice);
+    const qty = Number(quantity);
+    const invested = Number(amountInvested);
+    const sl = Number(stopLoss);
+    const tp = Number(takeProfit);
+
+    const pnl = ep && xp && qty
+      ? (xp - ep) * qty * (action === "buy" ? 1 : -1)
+      : null;
+
+    const percentageGain = pnl && invested ? (pnl / invested) * 100 : null;
+
+    const risk = ep && sl && qty ? Math.abs(ep - sl) * qty : null;
+    const reward = ep && tp && qty ? Math.abs(tp - ep) * qty : null;
+    const rrRatio = risk && reward ? reward / risk : null;
+
+    setPreview({ pnl, rrRatio, percentageGain, risk });
+  }, [
+    watched.entryPrice, watched.exitPrice, watched.quantity,
+    watched.amountInvested, watched.stopLoss, watched.takeProfit, watched.action
+  ]);
+
+  const onSubmit = async (values: TradeFormValues) => {
+    setLoading(true);
+    setError("");
+    try {
+      await apiFetch("/api/trades", {
+        method: "POST",
+        body: JSON.stringify({
+          ...values,
+          exitPrice: values.exitPrice || null,
+          amountInvested: values.amountInvested || null,
+          stopLoss: values.stopLoss || null,
+          takeProfit: values.takeProfit || null,
+          exitDate: values.exitDate || null,
+          emotionalState: values.emotionalState || null,
+        }),
+      });
+      form.reset();
+      setPreview({ pnl: null, rrRatio: null, percentageGain: null, risk: null });
+      if (onSuccess) onSuccess();
+      router.refresh();
+    } catch (err: any) {
+      setError(err.message || "Failed to log trade");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const pnlColor = preview.pnl === null ? "" : preview.pnl >= 0 ? "text-green-500" : "text-red-500";
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Row 1: Trade Type & Action */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+        {/* Live Preview Card */}
+        {(preview.pnl !== null || preview.rrRatio !== null) && (
+          <Card className="border-dashed">
+            <CardContent className="pt-4">
+              <p className="text-xs text-muted-foreground mb-3">Live Trade Preview</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {preview.pnl !== null && (
+                  <div className="flex items-center gap-2">
+                    {preview.pnl >= 0
+                      ? <TrendingUp className="h-4 w-4 text-green-500" />
+                      : <TrendingDown className="h-4 w-4 text-red-500" />}
+                    <div>
+                      <p className="text-xs text-muted-foreground">P&L</p>
+                      <p className={`font-bold ${pnlColor}`}>
+                        {preview.pnl >= 0 ? "+" : ""}${preview.pnl.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {preview.percentageGain !== null && (
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">% Gain</p>
+                      <p className={`font-bold ${pnlColor}`}>
+                        {preview.percentageGain >= 0 ? "+" : ""}{preview.percentageGain.toFixed(2)}%
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {preview.rrRatio !== null && (
+                  <div className="flex items-center gap-2">
+                    <Target className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">R:R Ratio</p>
+                      <p className="font-bold">1 : {preview.rrRatio.toFixed(2)}</p>
+                    </div>
+                  </div>
+                )}
+                {preview.risk !== null && (
+                  <div className="flex items-center gap-2">
+                    <TrendingDown className="h-4 w-4 text-red-400" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Risk</p>
+                      <p className="font-bold text-red-400">${preview.risk.toFixed(2)}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Row 1: Type, Action, Status */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <FormField
             control={form.control}
-            name="type"
+            name="tradeType"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Asset Type</FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    field.onChange(value as TradeFormValues['type']);
-                    // The useEffect will handle symbol reset and options update
-                  }}
-                  value={field.value} // Use value directly from field
-                >
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger><SelectValue placeholder="Select asset type" /></SelectTrigger>
+                    <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.keys(symbolOptions).map(type => (
-                      <SelectItem key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</SelectItem>
+                    {Object.keys(symbolOptions).map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -181,9 +238,9 @@ export default function TradeForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Action</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}> {/* Use value directly */}
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger><SelectValue placeholder="Select action" /></SelectTrigger>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="buy">Buy (Long)</SelectItem>
@@ -194,35 +251,43 @@ export default function TradeForm() {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="open">Open</SelectItem>
+                    <SelectItem value="closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
-        {/* Row 2: Symbol & Date */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {/* Row 2: Symbol, Entry Date, Exit Date */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <FormField
             control={form.control}
             name="symbol"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Symbol</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""}> {/* Keep || "" for placeholder */}
+                <Select onValueChange={field.onChange} value={field.value || ""}>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select symbol" />
-                    </SelectTrigger>
+                    <SelectTrigger><SelectValue placeholder="Select symbol" /></SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {currentSymbolOptions.length > 0 ? (
-                      currentSymbolOptions.map((symbol) => (
-                        <SelectItem key={symbol} value={symbol}> {/* Ensure symbol is not "" */}
-                          {symbol}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      // Use a non-empty, non-selectable value for the disabled item
-                      <SelectItem value={NO_SELECTION_VALUE} disabled>
-                        {watchedTradeType ? "No symbols for this type" : "Select an asset type first"}
-                      </SelectItem>
-                    )}
+                    {symbolList.map((s) => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -231,10 +296,21 @@ export default function TradeForm() {
           />
           <FormField
             control={form.control}
-            name="date"
+            name="entryDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date</FormLabel>
+                <FormLabel>Entry Date</FormLabel>
+                <FormControl><Input type="date" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="exitDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Exit Date <span className="text-xs text-muted-foreground">(Optional)</span></FormLabel>
                 <FormControl><Input type="date" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
@@ -242,7 +318,7 @@ export default function TradeForm() {
           />
         </div>
 
-        {/* Row 3: Entry, Quantity, SL, Exit Prices */}
+        {/* Row 3: Entry Price, Exit Price, Quantity, Amount Invested */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <FormField
             control={form.control}
@@ -250,29 +326,9 @@ export default function TradeForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Entry Price</FormLabel>
-                <FormControl><Input type="number" step="any" placeholder="0.00" value={field.value ?? ''} onChange={e => handleNumberInputChange(e, field.onChange)} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-           <FormField
-            control={form.control}
-            name="quantity"
-            render={({ field }) => (
-            <FormItem>
-                <FormLabel>{watchedTradeType === "forex" ? "Lot Size" : "Quantity"}</FormLabel>
-                <FormControl><Input type="number" step="any" placeholder="e.g., 1 or 0.01" value={field.value ?? ''} onChange={e => handleNumberInputChange(e, field.onChange)}/></FormControl>
-                <FormMessage />
-            </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="stopLoss"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Stop Loss <span className="text-xs text-muted-foreground">(Optional)</span></FormLabel>
-                <FormControl><Input type="number" step="any" placeholder="0.00" value={field.value ?? ''} onChange={e => handleNumberInputChange(e, field.onChange)}/></FormControl>
+                <FormControl>
+                  <Input type="number" step="any" placeholder="0.00" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -283,91 +339,118 @@ export default function TradeForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Exit Price <span className="text-xs text-muted-foreground">(Optional)</span></FormLabel>
-                <FormControl><Input type="number" step="any" placeholder="0.00" value={field.value ?? ''} onChange={e => handleNumberInputChange(e, field.onChange)}/></FormControl>
+                <FormControl>
+                  <Input type="number" step="any" placeholder="0.00" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {/* Removed TakeProfit as it was redundant with ExitPrice in this simplified form */}
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{watched.tradeType === "forex" ? "Lot Size" : "Quantity"}</FormLabel>
+                <FormControl>
+                  <Input type="number" step="any" placeholder="0.00" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="amountInvested"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Amount Invested <span className="text-xs text-muted-foreground">(Optional)</span></FormLabel>
+                <FormControl>
+                  <Input type="number" step="any" placeholder="0.00" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
-        {/* Row 4: Strategy & Tags */}
+        {/* Row 4: Stop Loss, Take Profit */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
-            name="strategyId"
+            name="stopLoss"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Strategy <span className="text-xs text-muted-foreground">(Optional)</span></FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(value === NO_SELECTION_VALUE ? null : value)}
-                  // If field.value is null/undefined (no strategy), Select value becomes NO_SELECTION_VALUE to show "None"
-                  // Otherwise, it's the actual strategyId
-                  value={field.value === null || field.value === undefined ? NO_SELECTION_VALUE : field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger><SelectValue placeholder="Select strategy" /></SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value={NO_SELECTION_VALUE}>None</SelectItem>
-                    {mockStrategies.map(strat => (
-                      <SelectItem key={strat.id} value={strat.id}>{strat.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormLabel>Stop Loss <span className="text-xs text-muted-foreground">(Optional)</span></FormLabel>
+                <FormControl>
+                  <Input type="number" step="any" placeholder="0.00" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="tags"
+            name="takeProfit"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tags <span className="text-xs text-muted-foreground">(Optional, comma-separated)</span></FormLabel>
+                <FormLabel>Take Profit <span className="text-xs text-muted-foreground">(Optional)</span></FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="e.g., breakout, news, fomo"
-                    value={Array.isArray(field.value) ? field.value.join(", ") : ""}
-                    onChange={e => field.onChange(e.target.value.split(',').map(t => t.trim()).filter(t => t))}
-                  />
+                  <Input type="number" step="any" placeholder="0.00" {...field} />
                 </FormControl>
-                <FormDescription>Helps in filtering and analysis.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        {/* Row 5: Rationale */}
+        {/* Row 5: Emotional State */}
         <FormField
           control={form.control}
-          name="rationale"
+          name="emotionalState"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Trade Rationale <span className="text-xs text-muted-foreground">(Optional)</span></FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Why did you take this trade? What was the setup, confirmation, and emotional state?"
-                  value={field.value || ''} // Ensure value is not null for textarea
-                  onChange={field.onChange}
-                  rows={4}
-                />
-              </FormControl>
-              <FormDescription>Crucial for AI analysis and personal review.</FormDescription>
+              <FormLabel>Emotional State <span className="text-xs text-muted-foreground">(Optional)</span></FormLabel>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {emotionalStates.map((state) => (
+                  <Badge
+                    key={state}
+                    variant={field.value === state ? "default" : "outline"}
+                    className="cursor-pointer"
+                    onClick={() => field.onChange(field.value === state ? "" : state)}
+                  >
+                    {state}
+                  </Badge>
+                ))}
+              </div>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {actionFeedback && (
-          <p className={`text-sm font-medium mt-2 ${actionFeedback.type === 'error' ? 'text-destructive' : 'text-green-600'}`}>
-            {actionFeedback.message}
-          </p>
-        )}
+        {/* Row 6: Notes */}
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes <span className="text-xs text-muted-foreground">(Optional)</span></FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Trade rationale, observations, lessons learned..."
+                  rows={3}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
-          {isPending ? "Logging Trade..." : "Log Trade"}
+        {error && <p className="text-sm text-destructive">{error}</p>}
+
+        <Button type="submit" disabled={loading} className="w-full sm:w-auto">
+          {loading ? "Logging Trade..." : "Log Trade"}
         </Button>
       </form>
     </Form>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { Line, LineChart, Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import type { Trade } from "../types/trade"
 
 interface TradeChartProps {
@@ -9,102 +9,67 @@ interface TradeChartProps {
   type: "forex" | "crypto"
 }
 
+// Bug 5 fix: unique gradient IDs per chart type
+// Bug 6 fix: light theme now has correct "forex" key
+// S1 simplification: single renderChart() instead of duplicated branches
+const chartColors: Record<"forex" | "crypto", { dark: string; light: string }> = {
+  forex: { dark: "#4CAF50", light: "#2E7D32" },
+  crypto: { dark: "#F7931A", light: "#FF6B00" },
+}
+
 export default function TradeChart({ trades, type }: TradeChartProps) {
   const { theme } = useTheme()
 
+  const color = theme === "dark" ? chartColors[type].dark : chartColors[type].light
+  const gradientId = `colorProfit-${type}`
+
   const data = trades
-    .filter((trade) => trade.type === type)
+    .filter((trade) => trade.tradeType === type)
     .map((trade) => ({
       symbol: trade.symbol,
       profit: Number.parseFloat(
         (
-          (Number.parseFloat(trade.exitPrice) - Number.parseFloat(trade.entryPrice)) *
-          Number.parseFloat(trade.quantity) *
+          (Number.parseFloat(String(trade.exitPrice ?? "0")) - Number.parseFloat(String(trade.entryPrice ?? "0"))) *
+          Number.parseFloat(String(trade.quantity ?? "0")) *
           (trade.action === "buy" ? 1 : -1)
         ).toFixed(2),
       ),
       action: trade.action,
-      date: new Date(trade.date).getTime(),
+      date: new Date(trade.entryDate).getTime(),
     }))
     .sort((a, b) => a.date - b.date)
 
-  const chartColor =
-    theme === "dark"
-      ? {
-          crypto: "#F7931A",
-          forex: "#4CAF50",
-        }
-      : {
-          crypto: "#FF6B00",
-          stock: "#1976D2",
-        }
-
-  const renderChart = () => {
-    switch (type) {
-      case "forex":
-        return (
-          <AreaChart data={data}>
-            <defs>
-              <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={chartColor.crypto} stopOpacity={0.8} />
-                <stop offset="95%" stopColor={chartColor.crypto} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="symbol" />
-            <YAxis />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF",
-                color: theme === "dark" ? "#FFFFFF" : "#000000",
-              }}
-              formatter={(value, name, props) => [`${value} (${props.payload.action})`, name]}
-            />
-            <Area
-              type="monotone"
-              dataKey="profit"
-              stroke={chartColor.crypto}
-              fillOpacity={1}
-              fill="url(#colorProfit)"
-            />
-          </AreaChart>
-        )
-      case "crypto":
-        return (
-          <AreaChart data={data}>
-            <defs>
-              <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={chartColor.crypto} stopOpacity={0.8} />
-                <stop offset="95%" stopColor={chartColor.crypto} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="symbol" />
-            <YAxis />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF",
-                color: theme === "dark" ? "#FFFFFF" : "#000000",
-              }}
-              formatter={(value, name, props) => [`${value} (${props.payload.action})`, name]}
-            />
-            <Area
-              type="monotone"
-              dataKey="profit"
-              stroke={chartColor.crypto}
-              fillOpacity={1}
-              fill="url(#colorProfit)"
-            />
-          </AreaChart>
-        )
-      
-    }
-  }
-
   return (
     <ResponsiveContainer width="100%" height="100%">
-      {renderChart()}
+      <AreaChart data={data}>
+        <defs>
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor={color} stopOpacity={0.8} />
+            <stop offset="95%" stopColor={color} stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="symbol" />
+        <YAxis />
+        <Tooltip
+          contentStyle={{
+            backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF",
+            color: theme === "dark" ? "#FFFFFF" : "#000000",
+          }}
+          formatter={(value) => {
+            const numValue = typeof value === 'number' ? value : 0
+            return `${numValue} `
+          }}
+          labelFormatter={(label) => `${label}`}
+        />
+        <Area
+          type="monotone"
+          dataKey="profit"
+          stroke={color}
+          fillOpacity={1}
+          fill={`url(#${gradientId})`}
+        />
+      </AreaChart>
     </ResponsiveContainer>
   )
 }
-
