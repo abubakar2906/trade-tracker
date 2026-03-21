@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { apiFetch } from "@/app/lib/api"
+import { saveToken } from "@/app/lib/api"
 
 export default function SignupPage() {
   const router = useRouter()
@@ -25,8 +26,8 @@ export default function SignupPage() {
         method: "POST",
         body: JSON.stringify({ fullName, email, password }),
       })
-      localStorage.setItem("token", data.token)
-      localStorage.setItem("user", JSON.stringify(data.user))
+      saveToken(data.token)
+localStorage.setItem("user", JSON.stringify(data.user))
       router.push("/dashboard")
     } catch (err: any) {
       setError(err.message)
