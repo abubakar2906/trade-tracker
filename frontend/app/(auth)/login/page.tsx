@@ -27,7 +27,6 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       })
       saveToken(data.token)
-      localStorage.setItem("user", JSON.stringify(data.user))
       router.push("/dashboard")
     } catch (err: any) {
       setError(err.message)

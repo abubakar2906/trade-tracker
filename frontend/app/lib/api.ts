@@ -1,7 +1,13 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
+function getTokenFromCookie(): string | null {
+  if (typeof document === 'undefined') return null
+  const match = document.cookie.match(/(?:^|;\s*)token=([^;]*)/)
+  return match ? decodeURIComponent(match[1]) : null
+}
+
 export async function apiFetch(path: string, options: RequestInit = {}) {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const token = getTokenFromCookie()
 
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
@@ -21,11 +27,12 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
 }
 
 export function saveToken(token: string) {
-  localStorage.setItem('token', token)
-  document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`
+  // Store only in a cookie (not localStorage) to reduce XSS attack surface.
+  // SameSite=Strict prevents CSRF. Secure ensures HTTPS-only in production.
+  const isSecure = location.protocol === 'https:'
+  document.cookie = `token=${encodeURIComponent(token)}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict${isSecure ? '; Secure' : ''}`
 }
 
 export function clearToken() {
-  localStorage.removeItem('token')
-  document.cookie = 'token=; path=/; max-age=0'
+  document.cookie = 'token=; path=/; max-age=0; SameSite=Strict'
 }

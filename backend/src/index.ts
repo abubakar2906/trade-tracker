@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import rateLimit from 'express-rate-limit'
 import authRoutes from './routes/auth.js'
 import tradeRoutes from './routes/trades.js'
 import strategyRoutes from './routes/strategies.js'
@@ -21,7 +22,16 @@ app.use(cors({
 }))
 app.use(express.json())
 
-app.use('/api/auth', authRoutes)
+// Rate limit auth endpoints: max 15 requests per 15 minutes per IP
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+})
+
+app.use('/api/auth', authLimiter, authRoutes)
 app.use('/api/trades', tradeRoutes)
 app.use('/api/strategies', strategyRoutes)
 app.use('/api/profile', profileRoutes)

@@ -5,8 +5,30 @@ import prisma from '../db/client.js'
 
 const router = Router()
 
+// --- helpers ---
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+function validateSignup(email: string, password: string, fullName: string) {
+  if (!fullName || fullName.trim().length < 1) return 'Full name is required'
+  if (!EMAIL_RE.test(email)) return 'Please enter a valid email address'
+  if (!password || password.length < 8) return 'Password must be at least 8 characters'
+  return null
+}
+
+function validateLogin(email: string, password: string) {
+  if (!EMAIL_RE.test(email)) return 'Please enter a valid email address'
+  if (!password || password.length < 1) return 'Password is required'
+  return null
+}
+
+// --- routes ---
 router.post('/signup', async (req: Request, res: Response) => {
   const { email, password, fullName } = req.body
+  const validationError = validateSignup(email, password, fullName)
+  if (validationError) {
+    res.status(400).json({ error: validationError })
+    return
+  }
   try {
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) {
@@ -27,6 +49,11 @@ router.post('/signup', async (req: Request, res: Response) => {
 
 router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body
+  const validationError = validateLogin(email, password)
+  if (validationError) {
+    res.status(400).json({ error: validationError })
+    return
+  }
   try {
     const user = await prisma.user.findUnique({ where: { email } })
     if (!user) {
@@ -45,4 +72,5 @@ router.post('/login', async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Something went wrong' })
   }
 })
+
 export default router

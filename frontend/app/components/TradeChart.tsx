@@ -56,11 +56,11 @@ export default function TradeChart({ trades, type }: TradeChartProps) {
             backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF",
             color: theme === "dark" ? "#FFFFFF" : "#000000",
           }}
-          formatter={(value) => {
+          formatter={(value: number | string) => {
             const numValue = typeof value === 'number' ? value : 0
             return `${numValue} `
           }}
-          labelFormatter={(label) => `${label}`}
+          labelFormatter={(label: string) => `${label}`}
         />
         <Area
           type="monotone"

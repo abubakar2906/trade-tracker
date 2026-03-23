@@ -74,6 +74,15 @@ router.post('/', async (req: AuthRequest, res: Response) => {
 
 router.put('/:id', async (req: AuthRequest, res: Response) => {
   try {
+    const id = String(req.params.id)
+
+    // Verify ownership before updating
+    const existing = await prisma.trade.findFirst({ where: { id, userId: req.userId } })
+    if (!existing) {
+      res.status(404).json({ error: 'Trade not found' })
+      return
+    }
+
     const {
       symbol, tradeType, action, entryPrice, exitPrice,
       quantity, amountInvested, stopLoss, takeProfit,
@@ -99,7 +108,7 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
     const riskRewardRatio = risk && reward ? reward / risk : null
 
     const trade = await prisma.trade.update({
-      where: { id: String(req.params.id) },
+      where: { id },
       data: {
         symbol, tradeType,
         entryPrice, exitPrice: exitPrice || null,
@@ -123,9 +132,16 @@ router.put('/:id', async (req: AuthRequest, res: Response) => {
 
 router.delete('/:id', async (req: AuthRequest, res: Response) => {
   try {
-    await prisma.trade.delete({
-      where: { id: String(req.params.id) },
-    })
+    const id = String(req.params.id)
+
+    // Verify ownership before deleting
+    const existing = await prisma.trade.findFirst({ where: { id, userId: req.userId } })
+    if (!existing) {
+      res.status(404).json({ error: 'Trade not found' })
+      return
+    }
+
+    await prisma.trade.delete({ where: { id } })
     res.json({ message: 'Trade deleted' })
   } catch (err) {
     console.error('Delete trade error:', err)
