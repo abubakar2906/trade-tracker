@@ -36,3 +36,52 @@ export function saveToken(token: string) {
 export function clearToken() {
   document.cookie = 'token=; path=/; max-age=0; SameSite=Strict'
 }
+
+// --- Broker API methods ---
+
+export async function getBrokerAccounts() {
+  return apiFetch('/api/broker')
+}
+
+export async function connectBrokerAccount(data: any) {
+  return apiFetch('/api/broker/connect', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function syncBrokerAccount(id: string) {
+  return apiFetch(`/api/broker/${id}/sync`, {
+    method: 'POST',
+  })
+}
+
+export async function deleteBrokerAccount(id: string) {
+  return apiFetch(`/api/broker/${id}`, {
+    method: 'DELETE',
+  })
+}
+
+export async function uploadCsvTrades(file: File) {
+  const formData = new FormData()
+  formData.append('file', file)
+  
+  const token = getTokenFromCookie()
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+  
+  const res = await fetch(`${baseUrl}/api/import/csv`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    body: formData
+  })
+  
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Failed to upload CSV')
+  return data
+}
+
+export async function getNews() {
+  return apiFetch('/api/news')
+}

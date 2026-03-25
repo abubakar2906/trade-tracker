@@ -3,7 +3,8 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -23,8 +24,26 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  brokerAccounts BrokerAccount[]
+
   trades      Trade[]
   strategies  Strategy[]
+}
+
+model BrokerAccount {
+  id              String   @id @default(cuid())
+  userId          String
+  name            String?
+  accountId       String
+  brokerServer    String
+  platform        String   @default("mt5")
+  metaApiId       String?
+  status          String   @default("disconnected")
+  lastSync        DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Trade {

@@ -3,10 +3,13 @@
 
 import TradeForm from "../../../components/TradeForm"; // Ensure path is correct
 import TradeList from "../../../components/TradeList"; // Ensure path is correct
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { Suspense } from "react";
-import { ListChecks, LineChart, PlusCircle } from "lucide-react";
+import { ListChecks, LineChart, PlusCircle, Server } from "lucide-react";
+import { BrokerConnections } from "../../../components/BrokerConnections";
+import { CsvImport } from "../../../components/CsvImport";
 
 /**
  * TradesPage Component
@@ -22,10 +25,13 @@ export default function TradesPage() {
         {/* Optional: A quick action button or summary could go here */}
       </div>
 
-      <Tabs defaultValue="logTrade" className="w-full">
-        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 gap-2 sm:max-w-md mb-6">
+      <Tabs defaultValue="brokerSync" className="w-full">
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-4 gap-2 mb-6">
+          <TabsTrigger value="brokerSync">
+            <Server className="mr-2 h-4 w-4" /> Import & Sync
+          </TabsTrigger>
           <TabsTrigger value="logTrade">
-            <PlusCircle className="mr-2 h-4 w-4" /> Log New Trade
+            <PlusCircle className="mr-2 h-4 w-4" /> Manual Log
           </TabsTrigger>
           <TabsTrigger value="tradeList">
             <ListChecks className="mr-2 h-4 w-4" /> All Trades
@@ -34,6 +40,26 @@ export default function TradesPage() {
             <LineChart className="mr-2 h-4 w-4" /> Performance
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="brokerSync" className="space-y-6">
+          <CsvImport />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground text-[10px] tracking-wider font-semibold">MT4/MT5 Integration</span>
+            </div>
+          </div>
+          <div className="opacity-60 grayscale pointer-events-none select-none relative">
+            <div className="absolute top-2 right-2 z-10">
+              <Badge variant="secondary" className="bg-amber-500/10 text-amber-500 border-amber-500/20 px-2 py-0 text-[10px] uppercase font-bold tracking-widest leading-none h-5">
+                Coming Soon
+              </Badge>
+            </div>
+            <BrokerConnections />
+          </div>
+        </TabsContent>
 
         <TabsContent value="logTrade">
           <Card>

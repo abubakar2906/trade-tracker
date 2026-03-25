@@ -37,10 +37,14 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl">Login to TradeTracker</CardTitle>
-          <CardDescription>Enter your email below to login to your account</CardDescription>
+      <Card className="w-full max-w-md mx-auto relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-primary" />
+        <CardHeader className="space-y-1 text-center pb-8 pt-8">
+          <div className="flex justify-center mb-4">
+            <img src="/tradetracker-icon.svg" alt="Logo" className="h-12 w-12" />
+          </div>
+          <CardTitle className="text-2xl font-bold tracking-tight">Welcome Back</CardTitle>
+          <CardDescription>Enter your credentials to access your terminal</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <form onSubmit={handleSubmit} className="grid gap-4">

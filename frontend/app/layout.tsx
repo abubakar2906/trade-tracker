@@ -1,10 +1,8 @@
 // app/layout.tsx (Root Layout)
 import "./globals.css";
-import { Inter } from "next/font/google";
-// You might move ThemeProvider here if it's truly global, or keep it in (main)/layout.tsx
-// import { ThemeProvider } from "@/components/theme-provider"; 
+import { Space_Grotesk } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Trade Tracker", // General app title
@@ -18,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={spaceGrotesk.className}>
         {/* If ThemeProvider is here: */}
         {/* <ThemeProvider attribute="class" defaultTheme="dark" enableSystem> */}
           {children} {/* This will render (auth)/layout.tsx or (main)/layout.tsx */}

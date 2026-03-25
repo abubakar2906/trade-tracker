@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { BarChart2, PieChart, TrendingUp, DollarSign } from "lucide-react"
 import RecentTrades from "../../components/RecentTrades"
+import { NewsWidget } from "../../components/NewsWidget"
 import { getTrades } from "../../lib/trades"
 
 export default function Dashboard() {
@@ -95,7 +96,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="col-span-1 lg:col-span-2">
           <CardHeader>
             <CardTitle>Recent Trades</CardTitle>
@@ -104,6 +105,10 @@ export default function Dashboard() {
             <RecentTrades />
           </CardContent>
         </Card>
+        
+        <div className="col-span-1">
+          <NewsWidget />
+        </div>
       </div>
       <div className="flex justify-end space-x-4">
         <Button asChild>

@@ -38,10 +38,14 @@ export default function SignupPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl">Create an Account</CardTitle>
-          <CardDescription>Enter your information to create an account</CardDescription>
+      <Card className="w-full max-w-md mx-auto relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-primary" />
+        <CardHeader className="space-y-1 text-center pb-8 pt-8">
+          <div className="flex justify-center mb-4">
+            <img src="/tradetracker-icon.svg" alt="Logo" className="h-12 w-12" />
+          </div>
+          <CardTitle className="text-2xl font-bold tracking-tight">Create your Account</CardTitle>
+          <CardDescription>Join the elite circle of disciplined traders</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="grid gap-4">

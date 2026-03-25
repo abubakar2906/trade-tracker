@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ResponsiveContainer, LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts"
+import { ResponsiveContainer, LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts"
 import type { Trade } from "../types/trade"
 
 interface TradeStatisticsProps {
@@ -32,10 +32,11 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
     const tradesByDay: { [key: string]: number } = {}
 
     filteredTrades.forEach((trade, index) => {
-      const profit =
-        (Number(trade.exitPrice) - Number(trade.entryPrice)) *
-        Number(trade.quantity) *
-        (trade.action === "buy" ? 1 : -1)
+      const profit = trade.profitLoss !== null && trade.profitLoss !== undefined
+        ? Number(trade.profitLoss)
+        : (Number(trade.exitPrice) - Number(trade.entryPrice)) *
+          Number(trade.quantity) *
+          (trade.action === "buy" ? 1 : -1)
       totalProfit += profit
 
       if (profit > 0) {
@@ -58,7 +59,7 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
       }
 
       // Calculate pips for forex trades
-      if (trade.tradeType === "forex") {
+      if (trade.tradeType === "forex" && trade.exitPrice) {
         const pipValue = trade.symbol.includes("JPY") ? 0.01 : 0.0001
         totalPips += Math.abs(Number(trade.exitPrice) - Number(trade.entryPrice)) / pipValue
       }
@@ -231,12 +232,20 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
         <CardContent>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={profitBySymbolData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="symbol" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="profit" fill="#8884d8" />
+              <BarChart data={profitBySymbolData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
+                <XAxis dataKey="symbol" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
+                <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val: number) => `$${val}`} tickMargin={10} />
+                <Tooltip 
+                  cursor={{fill: 'transparent'}}
+                  contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px', border: '1px solid #333', color: '#f3f4f6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  formatter={(value: number) => [`$${value.toFixed(2)}`, 'Profit']}
+                />
+                <Bar dataKey="profit" radius={[4, 4, 0, 0]} barSize={32}>
+                  {profitBySymbolData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.profit >= 0 ? '#10b981' : '#ef4444'} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -250,12 +259,15 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
         <CardContent>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={tradesByDayData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="count" fill="#8884d8" />
+              <BarChart data={tradesByDayData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
+                <XAxis dataKey="date" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
+                <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
+                <Tooltip 
+                  cursor={{fill: 'transparent'}}
+                  contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px', border: '1px solid #333', color: '#f3f4f6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                />
+                <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={32} />
               </BarChart>
             </ResponsiveContainer>
           </div>

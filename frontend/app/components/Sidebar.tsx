@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Home, BarChart2, PieChart, Settings, Menu, TrendingUp, FileText, NotebookPen, User } from "lucide-react"
+import { Home, BarChart2, PieChart, Settings, Menu, TrendingUp, FileText, NotebookPen, User, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
@@ -14,23 +14,54 @@ const navItems = [
   { name: "Profile", href: "/profile", icon: User },
 ]
 
-
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
 
-  const SidebarContent = () => (
-    <div className="flex flex-col h-full">
-      <div className="p-4">
-        <h1 className="text-2xl font-bold">Trade Tracker</h1>
+  // Avoid creating inner components to prevent DOM unmounting on state change
+  const renderContent = (isMobile: boolean) => (
+    <div className="flex flex-col h-full relative">
+      <div className={`p-4 flex ${isCollapsed && !isMobile ? "flex-col items-center gap-4 mt-2" : "items-center justify-between"} min-h-[4rem] transition-all`}>
+        {(!isCollapsed || isMobile) ? (
+          <img 
+            src="/tradetracker-full.svg" 
+            alt="TradeTracker" 
+            className="h-7 w-auto object-contain"
+          />
+        ) : (
+          <img 
+            src="/tradetracker-icon.svg" 
+            alt="TT" 
+            className="h-8 w-8 object-contain"
+          />
+        )}
+        
+        {!isMobile && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 text-muted-foreground hover:text-foreground shrink-0"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+          >
+            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+          </Button>
+        )}
       </div>
-      <nav className="flex-1">
+      <nav className="flex-1 overflow-hidden mt-2">
         <ul className="space-y-2 p-2">
           {navItems.map((item) => (
             <li key={item.name}>
-              <Button variant="ghost" className="w-full justify-start" asChild onClick={() => setOpen(false)}>
-                <Link href={item.href}>
-                  <item.icon className="mr-3 h-5 w-5" />
-                  {item.name}
+              <Button 
+                variant="ghost" 
+                className={`w-full ${isCollapsed && !isMobile ? "justify-center px-0 flex" : "justify-start"}`} 
+                asChild 
+                onClick={() => setOpen(false)}
+              >
+                <Link href={item.href} title={isCollapsed ? item.name : undefined}>
+                  <item.icon className={`${isCollapsed && !isMobile ? "mr-0" : "mr-3"} h-5 w-5 flex-shrink-0 transition-all`} />
+                  <span className={`${isCollapsed && !isMobile ? "hidden" : "block"} whitespace-nowrap`}>
+                    {item.name}
+                  </span>
                 </Link>
               </Button>
             </li>
@@ -49,11 +80,17 @@ export default function Sidebar() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-64 p-0">
-          <SidebarContent />
+          {renderContent(true)}
         </SheetContent>
       </Sheet>
-      <div className="hidden lg:flex w-64 bg-card text-card-foreground border-r border-border flex-col">
-        <SidebarContent />
+      
+      {/* Desktop Sidebar */}
+      <div 
+        className={`hidden lg:flex bg-card text-card-foreground border-r border-border flex-col transition-all duration-300 ease-in-out ${
+          isCollapsed ? "w-16" : "w-64"
+        }`}
+      >
+        {renderContent(false)}
       </div>
     </>
   )

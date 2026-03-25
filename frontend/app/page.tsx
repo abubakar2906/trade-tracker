@@ -9,7 +9,7 @@ export default function LandingPage() {
 
         {/* Nav */}
         <nav className="flex items-center justify-between px-8 py-6 border-b border-border sticky top-0 bg-background/80 backdrop-blur-md z-50">
-          <span className="text-lg font-bold tracking-tight">TradeTracker</span>
+          <img src="/tradetracker-full.svg" alt="TradeTracker" className="h-8 w-auto" />
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Login
@@ -208,7 +208,7 @@ export default function LandingPage() {
 
         {/* Footer */}
         <footer className="border-t border-border px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="text-sm font-bold">TradeTracker</span>
+          <img src="/tradetracker-full.svg" alt="TradeTracker" className="h-6 w-auto opacity-80" />
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} TradeTracker. Built for traders who take it seriously.
           </p>
