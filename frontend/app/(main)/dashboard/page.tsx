@@ -3,9 +3,9 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { NewsWidget } from "../../components/NewsWidget"
 import { BarChart2, PieChart, TrendingUp, DollarSign } from "lucide-react"
 import RecentTrades from "../../components/RecentTrades"
-import { NewsWidget } from "../../components/NewsWidget"
 import { getTrades } from "../../lib/trades"
 
 export default function Dashboard() {
