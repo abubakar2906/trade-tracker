@@ -13,12 +13,19 @@ router.post('/connect', async (req: AuthRequest, res: Response) => {
 
   try {
     // 1. Connect to your Contabo VPS
-   await ssh.connect({
+    await ssh.connect({
       host: process.env.CONTABO_IP,
       port: parseInt(process.env.CONTABO_PORT || '2222'),
       username: 'root',
-      password: String(process.env.CONTABO_PASSWORD).trim(), // .trim() removes accidental spaces
+      password: 'Abu123', // Hardcode it here JUST ONCE to test if the variable is the issue
       readyTimeout: 40000,
+      // This helps bypass strict key-only requirements
+      tryKeyboard: true,
+      onKeyboardInteractive: (name, instructions, instructionsLang, prompts, finish) => {
+        if (prompts.length > 0 && prompts[0].prompt.toLowerCase().includes('password')) {
+          finish(['Abu123']);
+        }
+      }
     })
 
     // 2. Trigger the sync script we created on the VPS
