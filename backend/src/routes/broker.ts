@@ -17,11 +17,17 @@ router.post('/connect', async (req: AuthRequest, res: Response) => {
       host: process.env.CONTABO_IP,
       port: parseInt(process.env.CONTABO_PORT || '2222'),
       username: 'root',
-      password: 'Abu123', // Hardcode it here JUST ONCE to test if the variable is the issue
+      password: 'Abu123',
       readyTimeout: 40000,
-      // This helps bypass strict key-only requirements
       tryKeyboard: true,
-      onKeyboardInteractive: (name, instructions, instructionsLang, prompts, finish) => {
+      // Added TypeScript type definitions to the parameters below
+      onKeyboardInteractive: (
+        name: string,
+        instructions: string,
+        instructionsLang: string,
+        prompts: any[],
+        finish: (responses: string[]) => void
+      ) => {
         if (prompts.length > 0 && prompts[0].prompt.toLowerCase().includes('password')) {
           finish(['Abu123']);
         }
