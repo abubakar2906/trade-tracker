@@ -47,3 +47,5 @@ app.get('/health', (_, res) => res.json({ status: 'ok' }))
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+app.set('trust proxy', 1); // This tells Express it's behind Railway's proxy
