@@ -13,11 +13,11 @@ router.post('/connect', async (req: AuthRequest, res: Response) => {
 
   try {
     // 1. Connect to your Contabo VPS
-    await ssh.connect({
+   await ssh.connect({
       host: process.env.CONTABO_IP,
-      port: parseInt(process.env.CONTABO_PORT || '2222'), // Ensure this is here
+      port: parseInt(process.env.CONTABO_PORT || '2222'),
       username: 'root',
-      password: process.env.CONTABO_PASSWORD,
+      password: String(process.env.CONTABO_PASSWORD).trim(), // .trim() removes accidental spaces
       readyTimeout: 40000,
     })
 
