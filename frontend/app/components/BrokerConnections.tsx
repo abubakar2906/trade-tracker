@@ -100,7 +100,7 @@ export function BrokerConnections() {
         <div>
           <CardTitle className="text-base flex items-center gap-2">
             <Server className="w-5 h-5 text-primary" />
-            Broker Sync (Coming Soon)
+            Broker Sync
           </CardTitle>
           <CardDescription>Connect MT4/MT5 accounts to auto-sync your trades.</CardDescription>
         </div>

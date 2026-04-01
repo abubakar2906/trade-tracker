@@ -51,12 +51,7 @@ export default function TradesPage() {
               <span className="bg-background px-2 text-muted-foreground text-[10px] tracking-wider font-semibold">MT4/MT5 Integration</span>
             </div>
           </div>
-          <div className="opacity-60 grayscale pointer-events-none select-none relative">
-            <div className="absolute top-2 right-2 z-10">
-              <Badge variant="secondary" className="bg-amber-500/10 text-amber-500 border-amber-500/20 px-2 py-0 text-[10px] uppercase font-bold tracking-widest leading-none h-5">
-                Coming Soon
-              </Badge>
-            </div>
+          <div>
             <BrokerConnections />
           </div>
         </TabsContent>
