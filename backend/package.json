@@ -22,6 +22,7 @@
     "jsonwebtoken": "^9.0.3",
     "metaapi.cloud-sdk": "^29.3.3",
     "multer": "^2.1.1",
+    "node-ssh": "^13.2.1",
     "openai": "^6.32.0",
     "pg": "^8.16.0",
     "zod": "^4.3.6"

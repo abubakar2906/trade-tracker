@@ -18,7 +18,9 @@ router.get('/', async (req: AuthRequest, res: Response) => {
   }
 })
 
-router.post('/', async (req: AuthRequest, res: Response) => {
+// 1. The Manual POST (for the Web Frontend)
+// Uses 'authenticate' - Requires JWT
+router.post('/', authenticate, async (req: AuthRequest, res: Response) => {
   try {
     const {
       symbol, tradeType, action, entryPrice, exitPrice,
@@ -30,36 +32,15 @@ router.post('/', async (req: AuthRequest, res: Response) => {
       ? (exitPrice - entryPrice) * quantity * (action === 'buy' ? 1 : -1)
       : null
 
-    const percentageGain = profitLoss && amountInvested
-      ? (profitLoss / amountInvested) * 100
-      : null
-
-    const risk = stopLoss
-      ? Math.abs(entryPrice - stopLoss) * quantity
-      : null
-
-    const reward = takeProfit
-      ? Math.abs(takeProfit - entryPrice) * quantity
-      : null
-
-    const riskRewardRatio = risk && reward ? reward / risk : null
-
     const trade = await prisma.trade.create({
       data: {
         userId: req.userId!,
-        symbol,
-        tradeType,
-        entryPrice,
+        symbol, tradeType, entryPrice,
         exitPrice: exitPrice || null,
-        quantity,
-        amountInvested: amountInvested || null,
+        quantity, amountInvested: amountInvested || null,
         stopLoss: stopLoss || null,
         takeProfit: takeProfit || null,
         profitLoss,
-        percentageGain,
-        riskRewardRatio,
-        emotionalState: emotionalState || null,
-        notes: notes || null,
         status: status || 'open',
         entryDate: new Date(entryDate),
         exitDate: exitDate ? new Date(exitDate) : null,
@@ -67,10 +48,46 @@ router.post('/', async (req: AuthRequest, res: Response) => {
     })
     res.status(201).json(trade)
   } catch (err) {
-    console.error('Create trade error:', err)
-    res.status(500).json({ error: 'Something went wrong' })
+    res.status(500).json({ error: 'Create trade error' })
   }
 })
+
+// 2. The VPS Webhook POST (for the terminals)
+// NO 'authenticate' - Identified by MT5 Account ID
+router.post('/webhook', async (req, res) => {
+  try {
+    const { account, symbol, type, volume, price, deal_id } = req.body;
+    console.log("Incoming VPS Trade for Account:", account);
+
+    // Find which user owns this MT5 account
+    const brokerAccount = await prisma.brokerAccount.findFirst({
+      where: { accountId: account.toString() }
+    });
+
+    if (!brokerAccount) {
+      return res.status(404).json({ error: 'Broker account not found in DB' });
+    }
+
+    // Save to your Prisma Trade table
+    const trade = await prisma.trade.create({
+      data: {
+        userId: brokerAccount.userId,
+        symbol: symbol,
+        tradeType: 'forex',
+        entryPrice: price,
+        quantity: volume,
+        status: 'closed', // Webhook fires on 'deal', usually closed trades
+        entryDate: new Date(),
+        notes: `vps_deal_id_${deal_id}`
+      }
+    });
+
+    res.status(200).json({ message: 'Trade tracked', id: trade.id });
+  } catch (error) {
+    console.error("Webhook Logic Error:", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 router.put('/:id', async (req: AuthRequest, res: Response) => {
   try {
