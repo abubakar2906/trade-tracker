@@ -17,21 +17,8 @@ router.post('/connect', async (req: AuthRequest, res: Response) => {
       host: process.env.CONTABO_IP,
       port: parseInt(process.env.CONTABO_PORT || '2222'),
       username: 'root',
-      password: 'Abu123',
-      readyTimeout: 40000,
-      tryKeyboard: true,
-      // Added TypeScript type definitions to the parameters below
-      onKeyboardInteractive: (
-        name: string,
-        instructions: string,
-        instructionsLang: string,
-        prompts: any[],
-        finish: (responses: string[]) => void
-      ) => {
-        if (prompts.length > 0 && prompts[0].prompt.toLowerCase().includes('password')) {
-          finish(['Abu123']);
-        }
-      }
+      privateKey: process.env.CONTABO_SSH_KEY, // Using the secure key instead of a password
+      readyTimeout: 40000
     })
 
     // 2. Trigger the sync script we created on the VPS
