@@ -10,27 +10,27 @@ router.use(authenticate)
 // Connect a new broker account (Now triggers your VPS)
 router.post('/connect', async (req: AuthRequest, res: Response) => {
   const { name, accountId, password, brokerServer, platform } = req.body
-  
+
   try {
     // 1. Connect to your Contabo VPS
     await ssh.connect({
       host: process.env.CONTABO_IP,
+      port: parseInt(process.env.CONTABO_PORT || '22'), // Tell it to use 2222
       username: 'root',
       password: process.env.CONTABO_PASSWORD,
-      readyTimeout: 40000, 
-      keepaliveInterval: 10000 
+      readyTimeout: 40000,
     })
 
     // 2. Trigger the sync script we created on the VPS
     // This clones the template and starts the terminal
     const command = `~/sync_broker.sh ${req.userId} ${accountId} "${password}" "${brokerServer}"`
     const result = await ssh.execCommand(command)
-    
+
     ssh.dispose()
 
     if (result.stderr) {
-        console.error('VPS Script Error:', result.stderr)
-        throw new Error('Failed to launch terminal on trading server')
+      console.error('VPS Script Error:', result.stderr)
+      throw new Error('Failed to launch terminal on trading server')
     }
 
     // 3. Save to database (removing MetaApi IDs)
@@ -56,7 +56,7 @@ router.post('/connect', async (req: AuthRequest, res: Response) => {
 // coming into your /api/trades route. You don't need to manually 
 // fetch history here anymore unless you want a "Full Refresh".
 router.post('/:id/sync', async (req: AuthRequest, res: Response) => {
-    res.json({ message: "Sync is now handled live via VPS Webhook." })
+  res.json({ message: "Sync is now handled live via VPS Webhook." })
 })
 
 // Delete broker account (Kills the process on VPS)
