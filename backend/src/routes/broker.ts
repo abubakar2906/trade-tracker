@@ -16,7 +16,9 @@ router.post('/connect', async (req: AuthRequest, res: Response) => {
     await ssh.connect({
       host: process.env.CONTABO_IP,
       username: 'root',
-      password: process.env.CONTABO_PASSWORD
+      password: process.env.CONTABO_PASSWORD,
+      readyTimeout: 40000, 
+      keepaliveInterval: 10000 
     })
 
     // 2. Trigger the sync script we created on the VPS
