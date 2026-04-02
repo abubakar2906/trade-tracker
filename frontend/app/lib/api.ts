@@ -8,8 +8,9 @@ function getTokenFromCookie(): string | null {
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
   const token = getTokenFromCookie()
+  const baseUrl = API_URL ? API_URL.trim() : ''
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${baseUrl}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -19,11 +20,21 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   })
 
   if (!res.ok) {
-    const error = await res.json()
-    throw new Error(error.error || 'Something went wrong')
+    const contentType = res.headers.get("content-type")
+    if (contentType && contentType.includes("application/json")) {
+      const errorData = await res.json()
+      throw new Error(errorData.error || 'Something went wrong')
+    } else {
+      const textError = await res.text()
+      throw new Error(`Server Error: ${res.statusText || res.status}. Response: ${textError.slice(0, 50)}...`)
+    }
   }
 
-  return res.json()
+  const contentType = res.headers.get("content-type")
+  if (contentType && contentType.includes("application/json")) {
+    return res.json()
+  }
+  return res.text()
 }
 
 export function saveToken(token: string) {
