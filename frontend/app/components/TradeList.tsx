@@ -324,23 +324,22 @@ export default function TradeList({ showChartOnly, showTableOnly }: TradeListPro
           <div className="h-[300px] w-full pt-10 col-span-1 lg:col-span-2">
             <h3 className="text-lg font-semibold mb-4">Profit by Asset</h3>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={assetData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={assetData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorAssetList" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
                 <XAxis dataKey="symbol" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
                 <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(value: number) => `$${value}`} tickMargin={10} />
                 <RechartsTooltip 
-                  cursor={{fill: 'transparent'}}
                   contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px', border: '1px solid #333', color: '#f3f4f6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   formatter={(value: number) => [`$${value.toFixed(2)}`, 'Profit']}
                 />
-                <Bar dataKey="profit" radius={[4, 4, 0, 0]} barSize={32}>
-                  {
-                    assetData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.profit >= 0 ? '#10b981' : '#ef4444'} />
-                    ))
-                  }
-                </Bar>
-              </BarChart>
+                <Area type="monotone" dataKey="profit" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorAssetList)" strokeWidth={2} />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>

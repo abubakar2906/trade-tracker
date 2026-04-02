@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ResponsiveContainer, LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts"
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts"
 import type { Trade } from "../types/trade"
 
 interface TradeStatisticsProps {
@@ -232,21 +232,22 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
         <CardContent>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={profitBySymbolData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={profitBySymbolData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorProfitSymbol" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
                 <XAxis dataKey="symbol" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
                 <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val: number) => `$${val}`} tickMargin={10} />
                 <Tooltip 
-                  cursor={{fill: 'transparent'}}
                   contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px', border: '1px solid #333', color: '#f3f4f6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   formatter={(value: number) => [`$${value.toFixed(2)}`, 'Profit']}
                 />
-                <Bar dataKey="profit" radius={[4, 4, 0, 0]} barSize={32}>
-                  {profitBySymbolData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.profit >= 0 ? '#10b981' : '#ef4444'} />
-                  ))}
-                </Bar>
-              </BarChart>
+                <Area type="monotone" dataKey="profit" stroke="#10b981" fillOpacity={1} fill="url(#colorProfitSymbol)" strokeWidth={2} />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </CardContent>
@@ -259,16 +260,21 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
         <CardContent>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={tradesByDayData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={tradesByDayData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorTradesDay" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
                 <XAxis dataKey="date" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
                 <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
                 <Tooltip 
-                  cursor={{fill: 'transparent'}}
                   contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px', border: '1px solid #333', color: '#f3f4f6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
-                <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={32} />
-              </BarChart>
+                <Area type="monotone" dataKey="count" stroke="#3b82f6" fillOpacity={1} fill="url(#colorTradesDay)" strokeWidth={2} />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </CardContent>
