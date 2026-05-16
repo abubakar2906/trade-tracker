@@ -16,6 +16,15 @@ test.describe('Authentication Flow', () => {
   });
 
   test('should show error on invalid login', async ({ page }) => {
+    // Intercept the backend API call to return a mock 401 error
+    await page.route('**/api/auth/login', route => {
+      route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'Invalid email or password' })
+      });
+    });
+
     await page.goto('http://localhost:3000/login');
     
     // Fill in bad credentials
