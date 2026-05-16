@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "TradeTracker",
+    "slug": "tradetracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.tradetracker.app"
+    },
+    "android": {
+      "package": "com.tradetracker.app"
+    },
+    "plugins": [
+      "expo-asset"
+    ]
+  }
+}

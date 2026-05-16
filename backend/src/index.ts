@@ -2,6 +2,9 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import rateLimit from 'express-rate-limit'
+import pinoHttp from 'pino-http'
+import { logger } from './utils/logger.js'
+import { errorHandler } from './middleware/errorHandler.js'
 import authRoutes from './routes/auth.js'
 import tradeRoutes from './routes/trades.js'
 import strategyRoutes from './routes/strategies.js'
@@ -24,6 +27,7 @@ app.use(cors({
   credentials: true
 }))
 app.use(express.json())
+app.use(pinoHttp({ logger }))
 
 // Rate limit auth endpoints: max 15 requests per 15 minutes per IP
 const authLimiter = rateLimit({
@@ -44,8 +48,11 @@ app.use('/api/news', newsRoutes)
 
 app.get('/health', (_, res) => res.json({ status: 'ok' }))
 
+// Attach global error handler as the very last middleware
+app.use(errorHandler)
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  logger.info(`Server running on port ${PORT}`)
 })
 
 app.set('trust proxy', 1); // This tells Express it's behind Railway's proxy

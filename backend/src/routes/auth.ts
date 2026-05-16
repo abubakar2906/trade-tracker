@@ -5,30 +5,27 @@ import prisma from '../db/client.js'
 
 const router = Router()
 
-// --- helpers ---
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+import { z } from 'zod'
+import { validate } from '../middleware/validate.js'
 
-function validateSignup(email: string, password: string, fullName: string) {
-  if (!fullName || fullName.trim().length < 1) return 'Full name is required'
-  if (!EMAIL_RE.test(email)) return 'Please enter a valid email address'
-  if (!password || password.length < 8) return 'Password must be at least 8 characters'
-  return null
-}
+const signupSchema = z.object({
+  body: z.object({
+    email: z.string().email('Please enter a valid email address'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    fullName: z.string().min(1, 'Full name is required').trim(),
+  }),
+})
 
-function validateLogin(email: string, password: string) {
-  if (!EMAIL_RE.test(email)) return 'Please enter a valid email address'
-  if (!password || password.length < 1) return 'Password is required'
-  return null
-}
+const loginSchema = z.object({
+  body: z.object({
+    email: z.string().email('Please enter a valid email address'),
+    password: z.string().min(1, 'Password is required'),
+  }),
+})
 
 // --- routes ---
-router.post('/signup', async (req: Request, res: Response) => {
+router.post('/signup', validate(signupSchema), async (req: Request, res: Response) => {
   const { email, password, fullName } = req.body
-  const validationError = validateSignup(email, password, fullName)
-  if (validationError) {
-    res.status(400).json({ error: validationError })
-    return
-  }
   try {
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) {
@@ -47,13 +44,8 @@ router.post('/signup', async (req: Request, res: Response) => {
   }
 })
 
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', validate(loginSchema), async (req: Request, res: Response) => {
   const { email, password } = req.body
-  const validationError = validateLogin(email, password)
-  if (validationError) {
-    res.status(400).json({ error: validationError })
-    return
-  }
   try {
     const user = await prisma.user.findUnique({ where: { email } })
     if (!user) {
