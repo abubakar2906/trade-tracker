@@ -27,49 +27,25 @@ export type AggregateTrade = {
 }
 
 export type TradeAvgAggregateOutputType = {
-  entryPrice: number | null
-  exitPrice: number | null
-  quantity: number | null
-  amountInvested: number | null
-  stopLoss: number | null
-  takeProfit: number | null
   profitLoss: number | null
-  percentageGain: number | null
-  riskRewardRatio: number | null
 }
 
 export type TradeSumAggregateOutputType = {
-  entryPrice: number | null
-  exitPrice: number | null
-  quantity: number | null
-  amountInvested: number | null
-  stopLoss: number | null
-  takeProfit: number | null
   profitLoss: number | null
-  percentageGain: number | null
-  riskRewardRatio: number | null
 }
 
 export type TradeMinAggregateOutputType = {
   id: string | null
   userId: string | null
   symbol: string | null
-  tradeType: string | null
-  action: string | null
-  entryPrice: number | null
-  exitPrice: number | null
-  quantity: number | null
-  amountInvested: number | null
-  stopLoss: number | null
-  takeProfit: number | null
+  bias: $Enums.TradeBias | null
+  date: Date | null
+  entryPoint: string | null
+  tradeDuration: string | null
+  riskReward: string | null
   profitLoss: number | null
-  percentageGain: number | null
-  riskRewardRatio: number | null
-  emotionalState: string | null
-  notes: string | null
-  status: string | null
-  entryDate: Date | null
-  exitDate: Date | null
+  winLoss: $Enums.TradeResult | null
+  comment: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -78,22 +54,14 @@ export type TradeMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   symbol: string | null
-  tradeType: string | null
-  action: string | null
-  entryPrice: number | null
-  exitPrice: number | null
-  quantity: number | null
-  amountInvested: number | null
-  stopLoss: number | null
-  takeProfit: number | null
+  bias: $Enums.TradeBias | null
+  date: Date | null
+  entryPoint: string | null
+  tradeDuration: string | null
+  riskReward: string | null
   profitLoss: number | null
-  percentageGain: number | null
-  riskRewardRatio: number | null
-  emotionalState: string | null
-  notes: string | null
-  status: string | null
-  entryDate: Date | null
-  exitDate: Date | null
+  winLoss: $Enums.TradeResult | null
+  comment: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -102,22 +70,17 @@ export type TradeCountAggregateOutputType = {
   id: number
   userId: number
   symbol: number
-  tradeType: number
-  action: number
-  entryPrice: number
-  exitPrice: number
-  quantity: number
-  amountInvested: number
-  stopLoss: number
-  takeProfit: number
+  bias: number
+  date: number
+  entryPoint: number
+  tradeDuration: number
+  riskReward: number
   profitLoss: number
-  percentageGain: number
-  riskRewardRatio: number
-  emotionalState: number
-  notes: number
-  status: number
-  entryDate: number
-  exitDate: number
+  winLoss: number
+  comment: number
+  timeframes: number
+  setups: number
+  emotions: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -125,49 +88,25 @@ export type TradeCountAggregateOutputType = {
 
 
 export type TradeAvgAggregateInputType = {
-  entryPrice?: true
-  exitPrice?: true
-  quantity?: true
-  amountInvested?: true
-  stopLoss?: true
-  takeProfit?: true
   profitLoss?: true
-  percentageGain?: true
-  riskRewardRatio?: true
 }
 
 export type TradeSumAggregateInputType = {
-  entryPrice?: true
-  exitPrice?: true
-  quantity?: true
-  amountInvested?: true
-  stopLoss?: true
-  takeProfit?: true
   profitLoss?: true
-  percentageGain?: true
-  riskRewardRatio?: true
 }
 
 export type TradeMinAggregateInputType = {
   id?: true
   userId?: true
   symbol?: true
-  tradeType?: true
-  action?: true
-  entryPrice?: true
-  exitPrice?: true
-  quantity?: true
-  amountInvested?: true
-  stopLoss?: true
-  takeProfit?: true
+  bias?: true
+  date?: true
+  entryPoint?: true
+  tradeDuration?: true
+  riskReward?: true
   profitLoss?: true
-  percentageGain?: true
-  riskRewardRatio?: true
-  emotionalState?: true
-  notes?: true
-  status?: true
-  entryDate?: true
-  exitDate?: true
+  winLoss?: true
+  comment?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -176,22 +115,14 @@ export type TradeMaxAggregateInputType = {
   id?: true
   userId?: true
   symbol?: true
-  tradeType?: true
-  action?: true
-  entryPrice?: true
-  exitPrice?: true
-  quantity?: true
-  amountInvested?: true
-  stopLoss?: true
-  takeProfit?: true
+  bias?: true
+  date?: true
+  entryPoint?: true
+  tradeDuration?: true
+  riskReward?: true
   profitLoss?: true
-  percentageGain?: true
-  riskRewardRatio?: true
-  emotionalState?: true
-  notes?: true
-  status?: true
-  entryDate?: true
-  exitDate?: true
+  winLoss?: true
+  comment?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -200,22 +131,17 @@ export type TradeCountAggregateInputType = {
   id?: true
   userId?: true
   symbol?: true
-  tradeType?: true
-  action?: true
-  entryPrice?: true
-  exitPrice?: true
-  quantity?: true
-  amountInvested?: true
-  stopLoss?: true
-  takeProfit?: true
+  bias?: true
+  date?: true
+  entryPoint?: true
+  tradeDuration?: true
+  riskReward?: true
   profitLoss?: true
-  percentageGain?: true
-  riskRewardRatio?: true
-  emotionalState?: true
-  notes?: true
-  status?: true
-  entryDate?: true
-  exitDate?: true
+  winLoss?: true
+  comment?: true
+  timeframes?: true
+  setups?: true
+  emotions?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -311,22 +237,17 @@ export type TradeGroupByOutputType = {
   id: string
   userId: string
   symbol: string
-  tradeType: string
-  action: string
-  entryPrice: number
-  exitPrice: number | null
-  quantity: number
-  amountInvested: number | null
-  stopLoss: number | null
-  takeProfit: number | null
+  bias: $Enums.TradeBias
+  date: Date
+  entryPoint: string | null
+  tradeDuration: string | null
+  riskReward: string | null
   profitLoss: number | null
-  percentageGain: number | null
-  riskRewardRatio: number | null
-  emotionalState: string | null
-  notes: string | null
-  status: string
-  entryDate: Date
-  exitDate: Date | null
+  winLoss: $Enums.TradeResult | null
+  comment: string | null
+  timeframes: string[]
+  setups: string[]
+  emotions: string[]
   createdAt: Date
   updatedAt: Date
   _count: TradeCountAggregateOutputType | null
@@ -358,50 +279,42 @@ export type TradeWhereInput = {
   id?: Prisma.StringFilter<"Trade"> | string
   userId?: Prisma.StringFilter<"Trade"> | string
   symbol?: Prisma.StringFilter<"Trade"> | string
-  tradeType?: Prisma.StringFilter<"Trade"> | string
-  action?: Prisma.StringFilter<"Trade"> | string
-  entryPrice?: Prisma.FloatFilter<"Trade"> | number
-  exitPrice?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  quantity?: Prisma.FloatFilter<"Trade"> | number
-  amountInvested?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  stopLoss?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  takeProfit?: Prisma.FloatNullableFilter<"Trade"> | number | null
+  bias?: Prisma.EnumTradeBiasFilter<"Trade"> | $Enums.TradeBias
+  date?: Prisma.DateTimeFilter<"Trade"> | Date | string
+  entryPoint?: Prisma.StringNullableFilter<"Trade"> | string | null
+  tradeDuration?: Prisma.StringNullableFilter<"Trade"> | string | null
+  riskReward?: Prisma.StringNullableFilter<"Trade"> | string | null
   profitLoss?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  percentageGain?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  riskRewardRatio?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  emotionalState?: Prisma.StringNullableFilter<"Trade"> | string | null
-  notes?: Prisma.StringNullableFilter<"Trade"> | string | null
-  status?: Prisma.StringFilter<"Trade"> | string
-  entryDate?: Prisma.DateTimeFilter<"Trade"> | Date | string
-  exitDate?: Prisma.DateTimeNullableFilter<"Trade"> | Date | string | null
+  winLoss?: Prisma.EnumTradeResultNullableFilter<"Trade"> | $Enums.TradeResult | null
+  comment?: Prisma.StringNullableFilter<"Trade"> | string | null
+  timeframes?: Prisma.StringNullableListFilter<"Trade">
+  setups?: Prisma.StringNullableListFilter<"Trade">
+  emotions?: Prisma.StringNullableListFilter<"Trade">
   createdAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  reviews?: Prisma.TradeReviewListRelationFilter
 }
 
 export type TradeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   symbol?: Prisma.SortOrder
-  tradeType?: Prisma.SortOrder
-  action?: Prisma.SortOrder
-  entryPrice?: Prisma.SortOrder
-  exitPrice?: Prisma.SortOrderInput | Prisma.SortOrder
-  quantity?: Prisma.SortOrder
-  amountInvested?: Prisma.SortOrderInput | Prisma.SortOrder
-  stopLoss?: Prisma.SortOrderInput | Prisma.SortOrder
-  takeProfit?: Prisma.SortOrderInput | Prisma.SortOrder
+  bias?: Prisma.SortOrder
+  date?: Prisma.SortOrder
+  entryPoint?: Prisma.SortOrderInput | Prisma.SortOrder
+  tradeDuration?: Prisma.SortOrderInput | Prisma.SortOrder
+  riskReward?: Prisma.SortOrderInput | Prisma.SortOrder
   profitLoss?: Prisma.SortOrderInput | Prisma.SortOrder
-  percentageGain?: Prisma.SortOrderInput | Prisma.SortOrder
-  riskRewardRatio?: Prisma.SortOrderInput | Prisma.SortOrder
-  emotionalState?: Prisma.SortOrderInput | Prisma.SortOrder
-  notes?: Prisma.SortOrderInput | Prisma.SortOrder
-  status?: Prisma.SortOrder
-  entryDate?: Prisma.SortOrder
-  exitDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  winLoss?: Prisma.SortOrderInput | Prisma.SortOrder
+  comment?: Prisma.SortOrderInput | Prisma.SortOrder
+  timeframes?: Prisma.SortOrder
+  setups?: Prisma.SortOrder
+  emotions?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  reviews?: Prisma.TradeReviewOrderByRelationAggregateInput
 }
 
 export type TradeWhereUniqueInput = Prisma.AtLeast<{
@@ -411,47 +324,38 @@ export type TradeWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TradeWhereInput | Prisma.TradeWhereInput[]
   userId?: Prisma.StringFilter<"Trade"> | string
   symbol?: Prisma.StringFilter<"Trade"> | string
-  tradeType?: Prisma.StringFilter<"Trade"> | string
-  action?: Prisma.StringFilter<"Trade"> | string
-  entryPrice?: Prisma.FloatFilter<"Trade"> | number
-  exitPrice?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  quantity?: Prisma.FloatFilter<"Trade"> | number
-  amountInvested?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  stopLoss?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  takeProfit?: Prisma.FloatNullableFilter<"Trade"> | number | null
+  bias?: Prisma.EnumTradeBiasFilter<"Trade"> | $Enums.TradeBias
+  date?: Prisma.DateTimeFilter<"Trade"> | Date | string
+  entryPoint?: Prisma.StringNullableFilter<"Trade"> | string | null
+  tradeDuration?: Prisma.StringNullableFilter<"Trade"> | string | null
+  riskReward?: Prisma.StringNullableFilter<"Trade"> | string | null
   profitLoss?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  percentageGain?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  riskRewardRatio?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  emotionalState?: Prisma.StringNullableFilter<"Trade"> | string | null
-  notes?: Prisma.StringNullableFilter<"Trade"> | string | null
-  status?: Prisma.StringFilter<"Trade"> | string
-  entryDate?: Prisma.DateTimeFilter<"Trade"> | Date | string
-  exitDate?: Prisma.DateTimeNullableFilter<"Trade"> | Date | string | null
+  winLoss?: Prisma.EnumTradeResultNullableFilter<"Trade"> | $Enums.TradeResult | null
+  comment?: Prisma.StringNullableFilter<"Trade"> | string | null
+  timeframes?: Prisma.StringNullableListFilter<"Trade">
+  setups?: Prisma.StringNullableListFilter<"Trade">
+  emotions?: Prisma.StringNullableListFilter<"Trade">
   createdAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  reviews?: Prisma.TradeReviewListRelationFilter
 }, "id">
 
 export type TradeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   symbol?: Prisma.SortOrder
-  tradeType?: Prisma.SortOrder
-  action?: Prisma.SortOrder
-  entryPrice?: Prisma.SortOrder
-  exitPrice?: Prisma.SortOrderInput | Prisma.SortOrder
-  quantity?: Prisma.SortOrder
-  amountInvested?: Prisma.SortOrderInput | Prisma.SortOrder
-  stopLoss?: Prisma.SortOrderInput | Prisma.SortOrder
-  takeProfit?: Prisma.SortOrderInput | Prisma.SortOrder
+  bias?: Prisma.SortOrder
+  date?: Prisma.SortOrder
+  entryPoint?: Prisma.SortOrderInput | Prisma.SortOrder
+  tradeDuration?: Prisma.SortOrderInput | Prisma.SortOrder
+  riskReward?: Prisma.SortOrderInput | Prisma.SortOrder
   profitLoss?: Prisma.SortOrderInput | Prisma.SortOrder
-  percentageGain?: Prisma.SortOrderInput | Prisma.SortOrder
-  riskRewardRatio?: Prisma.SortOrderInput | Prisma.SortOrder
-  emotionalState?: Prisma.SortOrderInput | Prisma.SortOrder
-  notes?: Prisma.SortOrderInput | Prisma.SortOrder
-  status?: Prisma.SortOrder
-  entryDate?: Prisma.SortOrder
-  exitDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  winLoss?: Prisma.SortOrderInput | Prisma.SortOrder
+  comment?: Prisma.SortOrderInput | Prisma.SortOrder
+  timeframes?: Prisma.SortOrder
+  setups?: Prisma.SortOrder
+  emotions?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TradeCountOrderByAggregateInput
@@ -468,22 +372,17 @@ export type TradeScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Trade"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Trade"> | string
   symbol?: Prisma.StringWithAggregatesFilter<"Trade"> | string
-  tradeType?: Prisma.StringWithAggregatesFilter<"Trade"> | string
-  action?: Prisma.StringWithAggregatesFilter<"Trade"> | string
-  entryPrice?: Prisma.FloatWithAggregatesFilter<"Trade"> | number
-  exitPrice?: Prisma.FloatNullableWithAggregatesFilter<"Trade"> | number | null
-  quantity?: Prisma.FloatWithAggregatesFilter<"Trade"> | number
-  amountInvested?: Prisma.FloatNullableWithAggregatesFilter<"Trade"> | number | null
-  stopLoss?: Prisma.FloatNullableWithAggregatesFilter<"Trade"> | number | null
-  takeProfit?: Prisma.FloatNullableWithAggregatesFilter<"Trade"> | number | null
+  bias?: Prisma.EnumTradeBiasWithAggregatesFilter<"Trade"> | $Enums.TradeBias
+  date?: Prisma.DateTimeWithAggregatesFilter<"Trade"> | Date | string
+  entryPoint?: Prisma.StringNullableWithAggregatesFilter<"Trade"> | string | null
+  tradeDuration?: Prisma.StringNullableWithAggregatesFilter<"Trade"> | string | null
+  riskReward?: Prisma.StringNullableWithAggregatesFilter<"Trade"> | string | null
   profitLoss?: Prisma.FloatNullableWithAggregatesFilter<"Trade"> | number | null
-  percentageGain?: Prisma.FloatNullableWithAggregatesFilter<"Trade"> | number | null
-  riskRewardRatio?: Prisma.FloatNullableWithAggregatesFilter<"Trade"> | number | null
-  emotionalState?: Prisma.StringNullableWithAggregatesFilter<"Trade"> | string | null
-  notes?: Prisma.StringNullableWithAggregatesFilter<"Trade"> | string | null
-  status?: Prisma.StringWithAggregatesFilter<"Trade"> | string
-  entryDate?: Prisma.DateTimeWithAggregatesFilter<"Trade"> | Date | string
-  exitDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Trade"> | Date | string | null
+  winLoss?: Prisma.EnumTradeResultNullableWithAggregatesFilter<"Trade"> | $Enums.TradeResult | null
+  comment?: Prisma.StringNullableWithAggregatesFilter<"Trade"> | string | null
+  timeframes?: Prisma.StringNullableListFilter<"Trade">
+  setups?: Prisma.StringNullableListFilter<"Trade">
+  emotions?: Prisma.StringNullableListFilter<"Trade">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Trade"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Trade"> | Date | string
 }
@@ -491,119 +390,98 @@ export type TradeScalarWhereWithAggregatesInput = {
 export type TradeCreateInput = {
   id?: string
   symbol: string
-  tradeType: string
-  action?: string
-  entryPrice: number
-  exitPrice?: number | null
-  quantity: number
-  amountInvested?: number | null
-  stopLoss?: number | null
-  takeProfit?: number | null
+  bias: $Enums.TradeBias
+  date?: Date | string
+  entryPoint?: string | null
+  tradeDuration?: string | null
+  riskReward?: string | null
   profitLoss?: number | null
-  percentageGain?: number | null
-  riskRewardRatio?: number | null
-  emotionalState?: string | null
-  notes?: string | null
-  status?: string
-  entryDate: Date | string
-  exitDate?: Date | string | null
+  winLoss?: $Enums.TradeResult | null
+  comment?: string | null
+  timeframes?: Prisma.TradeCreatetimeframesInput | string[]
+  setups?: Prisma.TradeCreatesetupsInput | string[]
+  emotions?: Prisma.TradeCreateemotionsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTradesInput
+  reviews?: Prisma.TradeReviewCreateNestedManyWithoutTradeInput
 }
 
 export type TradeUncheckedCreateInput = {
   id?: string
   userId: string
   symbol: string
-  tradeType: string
-  action?: string
-  entryPrice: number
-  exitPrice?: number | null
-  quantity: number
-  amountInvested?: number | null
-  stopLoss?: number | null
-  takeProfit?: number | null
+  bias: $Enums.TradeBias
+  date?: Date | string
+  entryPoint?: string | null
+  tradeDuration?: string | null
+  riskReward?: string | null
   profitLoss?: number | null
-  percentageGain?: number | null
-  riskRewardRatio?: number | null
-  emotionalState?: string | null
-  notes?: string | null
-  status?: string
-  entryDate: Date | string
-  exitDate?: Date | string | null
+  winLoss?: $Enums.TradeResult | null
+  comment?: string | null
+  timeframes?: Prisma.TradeCreatetimeframesInput | string[]
+  setups?: Prisma.TradeCreatesetupsInput | string[]
+  emotions?: Prisma.TradeCreateemotionsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviews?: Prisma.TradeReviewUncheckedCreateNestedManyWithoutTradeInput
 }
 
 export type TradeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
-  tradeType?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.StringFieldUpdateOperationsInput | string
-  entryPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  exitPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  amountInvested?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  stopLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  takeProfit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bias?: Prisma.EnumTradeBiasFieldUpdateOperationsInput | $Enums.TradeBias
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryPoint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradeDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskReward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profitLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  percentageGain?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  riskRewardRatio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  emotionalState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  entryDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  exitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  winLoss?: Prisma.NullableEnumTradeResultFieldUpdateOperationsInput | $Enums.TradeResult | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeframes?: Prisma.TradeUpdatetimeframesInput | string[]
+  setups?: Prisma.TradeUpdatesetupsInput | string[]
+  emotions?: Prisma.TradeUpdateemotionsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTradesNestedInput
+  reviews?: Prisma.TradeReviewUpdateManyWithoutTradeNestedInput
 }
 
 export type TradeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
-  tradeType?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.StringFieldUpdateOperationsInput | string
-  entryPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  exitPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  amountInvested?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  stopLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  takeProfit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bias?: Prisma.EnumTradeBiasFieldUpdateOperationsInput | $Enums.TradeBias
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryPoint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradeDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskReward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profitLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  percentageGain?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  riskRewardRatio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  emotionalState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  entryDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  exitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  winLoss?: Prisma.NullableEnumTradeResultFieldUpdateOperationsInput | $Enums.TradeResult | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeframes?: Prisma.TradeUpdatetimeframesInput | string[]
+  setups?: Prisma.TradeUpdatesetupsInput | string[]
+  emotions?: Prisma.TradeUpdateemotionsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.TradeReviewUncheckedUpdateManyWithoutTradeNestedInput
 }
 
 export type TradeCreateManyInput = {
   id?: string
   userId: string
   symbol: string
-  tradeType: string
-  action?: string
-  entryPrice: number
-  exitPrice?: number | null
-  quantity: number
-  amountInvested?: number | null
-  stopLoss?: number | null
-  takeProfit?: number | null
+  bias: $Enums.TradeBias
+  date?: Date | string
+  entryPoint?: string | null
+  tradeDuration?: string | null
+  riskReward?: string | null
   profitLoss?: number | null
-  percentageGain?: number | null
-  riskRewardRatio?: number | null
-  emotionalState?: string | null
-  notes?: string | null
-  status?: string
-  entryDate: Date | string
-  exitDate?: Date | string | null
+  winLoss?: $Enums.TradeResult | null
+  comment?: string | null
+  timeframes?: Prisma.TradeCreatetimeframesInput | string[]
+  setups?: Prisma.TradeCreatesetupsInput | string[]
+  emotions?: Prisma.TradeCreateemotionsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -611,22 +489,17 @@ export type TradeCreateManyInput = {
 export type TradeUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
-  tradeType?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.StringFieldUpdateOperationsInput | string
-  entryPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  exitPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  amountInvested?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  stopLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  takeProfit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bias?: Prisma.EnumTradeBiasFieldUpdateOperationsInput | $Enums.TradeBias
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryPoint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradeDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskReward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profitLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  percentageGain?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  riskRewardRatio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  emotionalState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  entryDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  exitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  winLoss?: Prisma.NullableEnumTradeResultFieldUpdateOperationsInput | $Enums.TradeResult | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeframes?: Prisma.TradeUpdatetimeframesInput | string[]
+  setups?: Prisma.TradeUpdatesetupsInput | string[]
+  emotions?: Prisma.TradeUpdateemotionsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -635,22 +508,17 @@ export type TradeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
-  tradeType?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.StringFieldUpdateOperationsInput | string
-  entryPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  exitPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  amountInvested?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  stopLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  takeProfit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bias?: Prisma.EnumTradeBiasFieldUpdateOperationsInput | $Enums.TradeBias
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryPoint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradeDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskReward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profitLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  percentageGain?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  riskRewardRatio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  emotionalState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  entryDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  exitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  winLoss?: Prisma.NullableEnumTradeResultFieldUpdateOperationsInput | $Enums.TradeResult | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeframes?: Prisma.TradeUpdatetimeframesInput | string[]
+  setups?: Prisma.TradeUpdatesetupsInput | string[]
+  emotions?: Prisma.TradeUpdateemotionsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -665,62 +533,49 @@ export type TradeOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type TradeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   symbol?: Prisma.SortOrder
-  tradeType?: Prisma.SortOrder
-  action?: Prisma.SortOrder
-  entryPrice?: Prisma.SortOrder
-  exitPrice?: Prisma.SortOrder
-  quantity?: Prisma.SortOrder
-  amountInvested?: Prisma.SortOrder
-  stopLoss?: Prisma.SortOrder
-  takeProfit?: Prisma.SortOrder
+  bias?: Prisma.SortOrder
+  date?: Prisma.SortOrder
+  entryPoint?: Prisma.SortOrder
+  tradeDuration?: Prisma.SortOrder
+  riskReward?: Prisma.SortOrder
   profitLoss?: Prisma.SortOrder
-  percentageGain?: Prisma.SortOrder
-  riskRewardRatio?: Prisma.SortOrder
-  emotionalState?: Prisma.SortOrder
-  notes?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  entryDate?: Prisma.SortOrder
-  exitDate?: Prisma.SortOrder
+  winLoss?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
+  timeframes?: Prisma.SortOrder
+  setups?: Prisma.SortOrder
+  emotions?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type TradeAvgOrderByAggregateInput = {
-  entryPrice?: Prisma.SortOrder
-  exitPrice?: Prisma.SortOrder
-  quantity?: Prisma.SortOrder
-  amountInvested?: Prisma.SortOrder
-  stopLoss?: Prisma.SortOrder
-  takeProfit?: Prisma.SortOrder
   profitLoss?: Prisma.SortOrder
-  percentageGain?: Prisma.SortOrder
-  riskRewardRatio?: Prisma.SortOrder
 }
 
 export type TradeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   symbol?: Prisma.SortOrder
-  tradeType?: Prisma.SortOrder
-  action?: Prisma.SortOrder
-  entryPrice?: Prisma.SortOrder
-  exitPrice?: Prisma.SortOrder
-  quantity?: Prisma.SortOrder
-  amountInvested?: Prisma.SortOrder
-  stopLoss?: Prisma.SortOrder
-  takeProfit?: Prisma.SortOrder
+  bias?: Prisma.SortOrder
+  date?: Prisma.SortOrder
+  entryPoint?: Prisma.SortOrder
+  tradeDuration?: Prisma.SortOrder
+  riskReward?: Prisma.SortOrder
   profitLoss?: Prisma.SortOrder
-  percentageGain?: Prisma.SortOrder
-  riskRewardRatio?: Prisma.SortOrder
-  emotionalState?: Prisma.SortOrder
-  notes?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  entryDate?: Prisma.SortOrder
-  exitDate?: Prisma.SortOrder
+  winLoss?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -729,36 +584,25 @@ export type TradeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   symbol?: Prisma.SortOrder
-  tradeType?: Prisma.SortOrder
-  action?: Prisma.SortOrder
-  entryPrice?: Prisma.SortOrder
-  exitPrice?: Prisma.SortOrder
-  quantity?: Prisma.SortOrder
-  amountInvested?: Prisma.SortOrder
-  stopLoss?: Prisma.SortOrder
-  takeProfit?: Prisma.SortOrder
+  bias?: Prisma.SortOrder
+  date?: Prisma.SortOrder
+  entryPoint?: Prisma.SortOrder
+  tradeDuration?: Prisma.SortOrder
+  riskReward?: Prisma.SortOrder
   profitLoss?: Prisma.SortOrder
-  percentageGain?: Prisma.SortOrder
-  riskRewardRatio?: Prisma.SortOrder
-  emotionalState?: Prisma.SortOrder
-  notes?: Prisma.SortOrder
-  status?: Prisma.SortOrder
-  entryDate?: Prisma.SortOrder
-  exitDate?: Prisma.SortOrder
+  winLoss?: Prisma.SortOrder
+  comment?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type TradeSumOrderByAggregateInput = {
-  entryPrice?: Prisma.SortOrder
-  exitPrice?: Prisma.SortOrder
-  quantity?: Prisma.SortOrder
-  amountInvested?: Prisma.SortOrder
-  stopLoss?: Prisma.SortOrder
-  takeProfit?: Prisma.SortOrder
   profitLoss?: Prisma.SortOrder
-  percentageGain?: Prisma.SortOrder
-  riskRewardRatio?: Prisma.SortOrder
+}
+
+export type TradeScalarRelationFilter = {
+  is?: Prisma.TradeWhereInput
+  isNot?: Prisma.TradeWhereInput
 }
 
 export type TradeCreateNestedManyWithoutUserInput = {
@@ -803,12 +647,20 @@ export type TradeUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.TradeScalarWhereInput | Prisma.TradeScalarWhereInput[]
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type TradeCreatetimeframesInput = {
+  set: string[]
+}
+
+export type TradeCreatesetupsInput = {
+  set: string[]
+}
+
+export type TradeCreateemotionsInput = {
+  set: string[]
+}
+
+export type EnumTradeBiasFieldUpdateOperationsInput = {
+  set?: $Enums.TradeBias
 }
 
 export type NullableFloatFieldUpdateOperationsInput = {
@@ -819,50 +671,75 @@ export type NullableFloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type NullableEnumTradeResultFieldUpdateOperationsInput = {
+  set?: $Enums.TradeResult | null
+}
+
+export type TradeUpdatetimeframesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type TradeUpdatesetupsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type TradeUpdateemotionsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type TradeCreateNestedOneWithoutReviewsInput = {
+  create?: Prisma.XOR<Prisma.TradeCreateWithoutReviewsInput, Prisma.TradeUncheckedCreateWithoutReviewsInput>
+  connectOrCreate?: Prisma.TradeCreateOrConnectWithoutReviewsInput
+  connect?: Prisma.TradeWhereUniqueInput
+}
+
+export type TradeUpdateOneRequiredWithoutReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.TradeCreateWithoutReviewsInput, Prisma.TradeUncheckedCreateWithoutReviewsInput>
+  connectOrCreate?: Prisma.TradeCreateOrConnectWithoutReviewsInput
+  upsert?: Prisma.TradeUpsertWithoutReviewsInput
+  connect?: Prisma.TradeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TradeUpdateToOneWithWhereWithoutReviewsInput, Prisma.TradeUpdateWithoutReviewsInput>, Prisma.TradeUncheckedUpdateWithoutReviewsInput>
+}
+
 export type TradeCreateWithoutUserInput = {
   id?: string
   symbol: string
-  tradeType: string
-  action?: string
-  entryPrice: number
-  exitPrice?: number | null
-  quantity: number
-  amountInvested?: number | null
-  stopLoss?: number | null
-  takeProfit?: number | null
+  bias: $Enums.TradeBias
+  date?: Date | string
+  entryPoint?: string | null
+  tradeDuration?: string | null
+  riskReward?: string | null
   profitLoss?: number | null
-  percentageGain?: number | null
-  riskRewardRatio?: number | null
-  emotionalState?: string | null
-  notes?: string | null
-  status?: string
-  entryDate: Date | string
-  exitDate?: Date | string | null
+  winLoss?: $Enums.TradeResult | null
+  comment?: string | null
+  timeframes?: Prisma.TradeCreatetimeframesInput | string[]
+  setups?: Prisma.TradeCreatesetupsInput | string[]
+  emotions?: Prisma.TradeCreateemotionsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviews?: Prisma.TradeReviewCreateNestedManyWithoutTradeInput
 }
 
 export type TradeUncheckedCreateWithoutUserInput = {
   id?: string
   symbol: string
-  tradeType: string
-  action?: string
-  entryPrice: number
-  exitPrice?: number | null
-  quantity: number
-  amountInvested?: number | null
-  stopLoss?: number | null
-  takeProfit?: number | null
+  bias: $Enums.TradeBias
+  date?: Date | string
+  entryPoint?: string | null
+  tradeDuration?: string | null
+  riskReward?: string | null
   profitLoss?: number | null
-  percentageGain?: number | null
-  riskRewardRatio?: number | null
-  emotionalState?: string | null
-  notes?: string | null
-  status?: string
-  entryDate: Date | string
-  exitDate?: Date | string | null
+  winLoss?: $Enums.TradeResult | null
+  comment?: string | null
+  timeframes?: Prisma.TradeCreatetimeframesInput | string[]
+  setups?: Prisma.TradeCreatesetupsInput | string[]
+  emotions?: Prisma.TradeCreateemotionsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviews?: Prisma.TradeReviewUncheckedCreateNestedManyWithoutTradeInput
 }
 
 export type TradeCreateOrConnectWithoutUserInput = {
@@ -898,45 +775,127 @@ export type TradeScalarWhereInput = {
   id?: Prisma.StringFilter<"Trade"> | string
   userId?: Prisma.StringFilter<"Trade"> | string
   symbol?: Prisma.StringFilter<"Trade"> | string
-  tradeType?: Prisma.StringFilter<"Trade"> | string
-  action?: Prisma.StringFilter<"Trade"> | string
-  entryPrice?: Prisma.FloatFilter<"Trade"> | number
-  exitPrice?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  quantity?: Prisma.FloatFilter<"Trade"> | number
-  amountInvested?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  stopLoss?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  takeProfit?: Prisma.FloatNullableFilter<"Trade"> | number | null
+  bias?: Prisma.EnumTradeBiasFilter<"Trade"> | $Enums.TradeBias
+  date?: Prisma.DateTimeFilter<"Trade"> | Date | string
+  entryPoint?: Prisma.StringNullableFilter<"Trade"> | string | null
+  tradeDuration?: Prisma.StringNullableFilter<"Trade"> | string | null
+  riskReward?: Prisma.StringNullableFilter<"Trade"> | string | null
   profitLoss?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  percentageGain?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  riskRewardRatio?: Prisma.FloatNullableFilter<"Trade"> | number | null
-  emotionalState?: Prisma.StringNullableFilter<"Trade"> | string | null
-  notes?: Prisma.StringNullableFilter<"Trade"> | string | null
-  status?: Prisma.StringFilter<"Trade"> | string
-  entryDate?: Prisma.DateTimeFilter<"Trade"> | Date | string
-  exitDate?: Prisma.DateTimeNullableFilter<"Trade"> | Date | string | null
+  winLoss?: Prisma.EnumTradeResultNullableFilter<"Trade"> | $Enums.TradeResult | null
+  comment?: Prisma.StringNullableFilter<"Trade"> | string | null
+  timeframes?: Prisma.StringNullableListFilter<"Trade">
+  setups?: Prisma.StringNullableListFilter<"Trade">
+  emotions?: Prisma.StringNullableListFilter<"Trade">
   createdAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
+}
+
+export type TradeCreateWithoutReviewsInput = {
+  id?: string
+  symbol: string
+  bias: $Enums.TradeBias
+  date?: Date | string
+  entryPoint?: string | null
+  tradeDuration?: string | null
+  riskReward?: string | null
+  profitLoss?: number | null
+  winLoss?: $Enums.TradeResult | null
+  comment?: string | null
+  timeframes?: Prisma.TradeCreatetimeframesInput | string[]
+  setups?: Prisma.TradeCreatesetupsInput | string[]
+  emotions?: Prisma.TradeCreateemotionsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutTradesInput
+}
+
+export type TradeUncheckedCreateWithoutReviewsInput = {
+  id?: string
+  userId: string
+  symbol: string
+  bias: $Enums.TradeBias
+  date?: Date | string
+  entryPoint?: string | null
+  tradeDuration?: string | null
+  riskReward?: string | null
+  profitLoss?: number | null
+  winLoss?: $Enums.TradeResult | null
+  comment?: string | null
+  timeframes?: Prisma.TradeCreatetimeframesInput | string[]
+  setups?: Prisma.TradeCreatesetupsInput | string[]
+  emotions?: Prisma.TradeCreateemotionsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TradeCreateOrConnectWithoutReviewsInput = {
+  where: Prisma.TradeWhereUniqueInput
+  create: Prisma.XOR<Prisma.TradeCreateWithoutReviewsInput, Prisma.TradeUncheckedCreateWithoutReviewsInput>
+}
+
+export type TradeUpsertWithoutReviewsInput = {
+  update: Prisma.XOR<Prisma.TradeUpdateWithoutReviewsInput, Prisma.TradeUncheckedUpdateWithoutReviewsInput>
+  create: Prisma.XOR<Prisma.TradeCreateWithoutReviewsInput, Prisma.TradeUncheckedCreateWithoutReviewsInput>
+  where?: Prisma.TradeWhereInput
+}
+
+export type TradeUpdateToOneWithWhereWithoutReviewsInput = {
+  where?: Prisma.TradeWhereInput
+  data: Prisma.XOR<Prisma.TradeUpdateWithoutReviewsInput, Prisma.TradeUncheckedUpdateWithoutReviewsInput>
+}
+
+export type TradeUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  bias?: Prisma.EnumTradeBiasFieldUpdateOperationsInput | $Enums.TradeBias
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryPoint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradeDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskReward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profitLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  winLoss?: Prisma.NullableEnumTradeResultFieldUpdateOperationsInput | $Enums.TradeResult | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeframes?: Prisma.TradeUpdatetimeframesInput | string[]
+  setups?: Prisma.TradeUpdatesetupsInput | string[]
+  emotions?: Prisma.TradeUpdateemotionsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutTradesNestedInput
+}
+
+export type TradeUncheckedUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  bias?: Prisma.EnumTradeBiasFieldUpdateOperationsInput | $Enums.TradeBias
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryPoint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradeDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskReward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profitLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  winLoss?: Prisma.NullableEnumTradeResultFieldUpdateOperationsInput | $Enums.TradeResult | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeframes?: Prisma.TradeUpdatetimeframesInput | string[]
+  setups?: Prisma.TradeUpdatesetupsInput | string[]
+  emotions?: Prisma.TradeUpdateemotionsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TradeCreateManyUserInput = {
   id?: string
   symbol: string
-  tradeType: string
-  action?: string
-  entryPrice: number
-  exitPrice?: number | null
-  quantity: number
-  amountInvested?: number | null
-  stopLoss?: number | null
-  takeProfit?: number | null
+  bias: $Enums.TradeBias
+  date?: Date | string
+  entryPoint?: string | null
+  tradeDuration?: string | null
+  riskReward?: string | null
   profitLoss?: number | null
-  percentageGain?: number | null
-  riskRewardRatio?: number | null
-  emotionalState?: string | null
-  notes?: string | null
-  status?: string
-  entryDate: Date | string
-  exitDate?: Date | string | null
+  winLoss?: $Enums.TradeResult | null
+  comment?: string | null
+  timeframes?: Prisma.TradeCreatetimeframesInput | string[]
+  setups?: Prisma.TradeCreatesetupsInput | string[]
+  emotions?: Prisma.TradeCreateemotionsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -944,119 +903,127 @@ export type TradeCreateManyUserInput = {
 export type TradeUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
-  tradeType?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.StringFieldUpdateOperationsInput | string
-  entryPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  exitPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  amountInvested?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  stopLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  takeProfit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bias?: Prisma.EnumTradeBiasFieldUpdateOperationsInput | $Enums.TradeBias
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryPoint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradeDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskReward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profitLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  percentageGain?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  riskRewardRatio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  emotionalState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  entryDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  exitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  winLoss?: Prisma.NullableEnumTradeResultFieldUpdateOperationsInput | $Enums.TradeResult | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeframes?: Prisma.TradeUpdatetimeframesInput | string[]
+  setups?: Prisma.TradeUpdatesetupsInput | string[]
+  emotions?: Prisma.TradeUpdateemotionsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.TradeReviewUpdateManyWithoutTradeNestedInput
 }
 
 export type TradeUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
-  tradeType?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.StringFieldUpdateOperationsInput | string
-  entryPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  exitPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  amountInvested?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  stopLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  takeProfit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bias?: Prisma.EnumTradeBiasFieldUpdateOperationsInput | $Enums.TradeBias
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryPoint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradeDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskReward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profitLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  percentageGain?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  riskRewardRatio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  emotionalState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  entryDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  exitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  winLoss?: Prisma.NullableEnumTradeResultFieldUpdateOperationsInput | $Enums.TradeResult | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeframes?: Prisma.TradeUpdatetimeframesInput | string[]
+  setups?: Prisma.TradeUpdatesetupsInput | string[]
+  emotions?: Prisma.TradeUpdateemotionsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.TradeReviewUncheckedUpdateManyWithoutTradeNestedInput
 }
 
 export type TradeUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
-  tradeType?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.StringFieldUpdateOperationsInput | string
-  entryPrice?: Prisma.FloatFieldUpdateOperationsInput | number
-  exitPrice?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  amountInvested?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  stopLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  takeProfit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bias?: Prisma.EnumTradeBiasFieldUpdateOperationsInput | $Enums.TradeBias
+  date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entryPoint?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradeDuration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskReward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profitLoss?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  percentageGain?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  riskRewardRatio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  emotionalState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  entryDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  exitDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  winLoss?: Prisma.NullableEnumTradeResultFieldUpdateOperationsInput | $Enums.TradeResult | null
+  comment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timeframes?: Prisma.TradeUpdatetimeframesInput | string[]
+  setups?: Prisma.TradeUpdatesetupsInput | string[]
+  emotions?: Prisma.TradeUpdateemotionsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type TradeCountOutputType
+ */
+
+export type TradeCountOutputType = {
+  reviews: number
+}
+
+export type TradeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  reviews?: boolean | TradeCountOutputTypeCountReviewsArgs
+}
+
+/**
+ * TradeCountOutputType without action
+ */
+export type TradeCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TradeCountOutputType
+   */
+  select?: Prisma.TradeCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TradeCountOutputType without action
+ */
+export type TradeCountOutputTypeCountReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TradeReviewWhereInput
+}
 
 
 export type TradeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   symbol?: boolean
-  tradeType?: boolean
-  action?: boolean
-  entryPrice?: boolean
-  exitPrice?: boolean
-  quantity?: boolean
-  amountInvested?: boolean
-  stopLoss?: boolean
-  takeProfit?: boolean
+  bias?: boolean
+  date?: boolean
+  entryPoint?: boolean
+  tradeDuration?: boolean
+  riskReward?: boolean
   profitLoss?: boolean
-  percentageGain?: boolean
-  riskRewardRatio?: boolean
-  emotionalState?: boolean
-  notes?: boolean
-  status?: boolean
-  entryDate?: boolean
-  exitDate?: boolean
+  winLoss?: boolean
+  comment?: boolean
+  timeframes?: boolean
+  setups?: boolean
+  emotions?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  reviews?: boolean | Prisma.Trade$reviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.TradeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["trade"]>
 
 export type TradeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   symbol?: boolean
-  tradeType?: boolean
-  action?: boolean
-  entryPrice?: boolean
-  exitPrice?: boolean
-  quantity?: boolean
-  amountInvested?: boolean
-  stopLoss?: boolean
-  takeProfit?: boolean
+  bias?: boolean
+  date?: boolean
+  entryPoint?: boolean
+  tradeDuration?: boolean
+  riskReward?: boolean
   profitLoss?: boolean
-  percentageGain?: boolean
-  riskRewardRatio?: boolean
-  emotionalState?: boolean
-  notes?: boolean
-  status?: boolean
-  entryDate?: boolean
-  exitDate?: boolean
+  winLoss?: boolean
+  comment?: boolean
+  timeframes?: boolean
+  setups?: boolean
+  emotions?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1066,22 +1033,17 @@ export type TradeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   userId?: boolean
   symbol?: boolean
-  tradeType?: boolean
-  action?: boolean
-  entryPrice?: boolean
-  exitPrice?: boolean
-  quantity?: boolean
-  amountInvested?: boolean
-  stopLoss?: boolean
-  takeProfit?: boolean
+  bias?: boolean
+  date?: boolean
+  entryPoint?: boolean
+  tradeDuration?: boolean
+  riskReward?: boolean
   profitLoss?: boolean
-  percentageGain?: boolean
-  riskRewardRatio?: boolean
-  emotionalState?: boolean
-  notes?: boolean
-  status?: boolean
-  entryDate?: boolean
-  exitDate?: boolean
+  winLoss?: boolean
+  comment?: boolean
+  timeframes?: boolean
+  setups?: boolean
+  emotions?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1091,29 +1053,26 @@ export type TradeSelectScalar = {
   id?: boolean
   userId?: boolean
   symbol?: boolean
-  tradeType?: boolean
-  action?: boolean
-  entryPrice?: boolean
-  exitPrice?: boolean
-  quantity?: boolean
-  amountInvested?: boolean
-  stopLoss?: boolean
-  takeProfit?: boolean
+  bias?: boolean
+  date?: boolean
+  entryPoint?: boolean
+  tradeDuration?: boolean
+  riskReward?: boolean
   profitLoss?: boolean
-  percentageGain?: boolean
-  riskRewardRatio?: boolean
-  emotionalState?: boolean
-  notes?: boolean
-  status?: boolean
-  entryDate?: boolean
-  exitDate?: boolean
+  winLoss?: boolean
+  comment?: boolean
+  timeframes?: boolean
+  setups?: boolean
+  emotions?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TradeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "symbol" | "tradeType" | "action" | "entryPrice" | "exitPrice" | "quantity" | "amountInvested" | "stopLoss" | "takeProfit" | "profitLoss" | "percentageGain" | "riskRewardRatio" | "emotionalState" | "notes" | "status" | "entryDate" | "exitDate" | "createdAt" | "updatedAt", ExtArgs["result"]["trade"]>
+export type TradeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "symbol" | "bias" | "date" | "entryPoint" | "tradeDuration" | "riskReward" | "profitLoss" | "winLoss" | "comment" | "timeframes" | "setups" | "emotions" | "createdAt" | "updatedAt", ExtArgs["result"]["trade"]>
 export type TradeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  reviews?: boolean | Prisma.Trade$reviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.TradeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TradeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1126,27 +1085,23 @@ export type $TradePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Trade"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    reviews: Prisma.$TradeReviewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
     symbol: string
-    tradeType: string
-    action: string
-    entryPrice: number
-    exitPrice: number | null
-    quantity: number
-    amountInvested: number | null
-    stopLoss: number | null
-    takeProfit: number | null
+    bias: $Enums.TradeBias
+    date: Date
+    entryPoint: string | null
+    tradeDuration: string | null
+    riskReward: string | null
     profitLoss: number | null
-    percentageGain: number | null
-    riskRewardRatio: number | null
-    emotionalState: string | null
-    notes: string | null
-    status: string
-    entryDate: Date
-    exitDate: Date | null
+    winLoss: $Enums.TradeResult | null
+    comment: string | null
+    timeframes: string[]
+    setups: string[]
+    emotions: string[]
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["trade"]>
@@ -1544,6 +1499,7 @@ readonly fields: TradeFieldRefs;
 export interface Prisma__TradeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  reviews<T extends Prisma.Trade$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Trade$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TradeReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1576,22 +1532,17 @@ export interface TradeFieldRefs {
   readonly id: Prisma.FieldRef<"Trade", 'String'>
   readonly userId: Prisma.FieldRef<"Trade", 'String'>
   readonly symbol: Prisma.FieldRef<"Trade", 'String'>
-  readonly tradeType: Prisma.FieldRef<"Trade", 'String'>
-  readonly action: Prisma.FieldRef<"Trade", 'String'>
-  readonly entryPrice: Prisma.FieldRef<"Trade", 'Float'>
-  readonly exitPrice: Prisma.FieldRef<"Trade", 'Float'>
-  readonly quantity: Prisma.FieldRef<"Trade", 'Float'>
-  readonly amountInvested: Prisma.FieldRef<"Trade", 'Float'>
-  readonly stopLoss: Prisma.FieldRef<"Trade", 'Float'>
-  readonly takeProfit: Prisma.FieldRef<"Trade", 'Float'>
+  readonly bias: Prisma.FieldRef<"Trade", 'TradeBias'>
+  readonly date: Prisma.FieldRef<"Trade", 'DateTime'>
+  readonly entryPoint: Prisma.FieldRef<"Trade", 'String'>
+  readonly tradeDuration: Prisma.FieldRef<"Trade", 'String'>
+  readonly riskReward: Prisma.FieldRef<"Trade", 'String'>
   readonly profitLoss: Prisma.FieldRef<"Trade", 'Float'>
-  readonly percentageGain: Prisma.FieldRef<"Trade", 'Float'>
-  readonly riskRewardRatio: Prisma.FieldRef<"Trade", 'Float'>
-  readonly emotionalState: Prisma.FieldRef<"Trade", 'String'>
-  readonly notes: Prisma.FieldRef<"Trade", 'String'>
-  readonly status: Prisma.FieldRef<"Trade", 'String'>
-  readonly entryDate: Prisma.FieldRef<"Trade", 'DateTime'>
-  readonly exitDate: Prisma.FieldRef<"Trade", 'DateTime'>
+  readonly winLoss: Prisma.FieldRef<"Trade", 'TradeResult'>
+  readonly comment: Prisma.FieldRef<"Trade", 'String'>
+  readonly timeframes: Prisma.FieldRef<"Trade", 'String[]'>
+  readonly setups: Prisma.FieldRef<"Trade", 'String[]'>
+  readonly emotions: Prisma.FieldRef<"Trade", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"Trade", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Trade", 'DateTime'>
 }
@@ -1992,6 +1943,30 @@ export type TradeDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Trades to delete.
    */
   limit?: number
+}
+
+/**
+ * Trade.reviews
+ */
+export type Trade$reviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TradeReview
+   */
+  select?: Prisma.TradeReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TradeReview
+   */
+  omit?: Prisma.TradeReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TradeReviewInclude<ExtArgs> | null
+  where?: Prisma.TradeReviewWhereInput
+  orderBy?: Prisma.TradeReviewOrderByWithRelationInput | Prisma.TradeReviewOrderByWithRelationInput[]
+  cursor?: Prisma.TradeReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TradeReviewScalarFieldEnum | Prisma.TradeReviewScalarFieldEnum[]
 }
 
 /**

@@ -52,8 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  BrokerAccount: 'BrokerAccount',
   Trade: 'Trade',
+  TradeReview: 'TradeReview',
   Strategy: 'Strategy',
   JournalEntry: 'JournalEntry'
 } as const
@@ -91,48 +91,37 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const BrokerAccountScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  name: 'name',
-  accountId: 'accountId',
-  brokerServer: 'brokerServer',
-  platform: 'platform',
-  metaApiId: 'metaApiId',
-  status: 'status',
-  lastSync: 'lastSync',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type BrokerAccountScalarFieldEnum = (typeof BrokerAccountScalarFieldEnum)[keyof typeof BrokerAccountScalarFieldEnum]
-
-
 export const TradeScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   symbol: 'symbol',
-  tradeType: 'tradeType',
-  action: 'action',
-  entryPrice: 'entryPrice',
-  exitPrice: 'exitPrice',
-  quantity: 'quantity',
-  amountInvested: 'amountInvested',
-  stopLoss: 'stopLoss',
-  takeProfit: 'takeProfit',
+  bias: 'bias',
+  date: 'date',
+  entryPoint: 'entryPoint',
+  tradeDuration: 'tradeDuration',
+  riskReward: 'riskReward',
   profitLoss: 'profitLoss',
-  percentageGain: 'percentageGain',
-  riskRewardRatio: 'riskRewardRatio',
-  emotionalState: 'emotionalState',
-  notes: 'notes',
-  status: 'status',
-  entryDate: 'entryDate',
-  exitDate: 'exitDate',
+  winLoss: 'winLoss',
+  comment: 'comment',
+  timeframes: 'timeframes',
+  setups: 'setups',
+  emotions: 'emotions',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type TradeScalarFieldEnum = (typeof TradeScalarFieldEnum)[keyof typeof TradeScalarFieldEnum]
+
+
+export const TradeReviewScalarFieldEnum = {
+  id: 'id',
+  tradeId: 'tradeId',
+  author: 'author',
+  reflection: 'reflection',
+  createdAt: 'createdAt'
+} as const
+
+export type TradeReviewScalarFieldEnum = (typeof TradeReviewScalarFieldEnum)[keyof typeof TradeReviewScalarFieldEnum]
 
 
 export const StrategyScalarFieldEnum = {

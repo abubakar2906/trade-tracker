@@ -23,15 +23,15 @@ export * from './enums.js';
  */
 export type User = Prisma.UserModel
 /**
- * Model BrokerAccount
- * 
- */
-export type BrokerAccount = Prisma.BrokerAccountModel
-/**
  * Model Trade
  * 
  */
 export type Trade = Prisma.TradeModel
+/**
+ * Model TradeReview
+ * 
+ */
+export type TradeReview = Prisma.TradeReviewModel
 /**
  * Model Strategy
  * 

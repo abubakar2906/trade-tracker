@@ -41,25 +41,22 @@ router.post('/csv', upload.single('file'), async (req: AuthRequest, res: Respons
 
           // Try to extract common fields
           const symbol = normalizedRow['symbol'] || normalizedRow['item'] || normalizedRow['asset']
-          const tradeType = normalizedRow['type'] || normalizedRow['tradetype'] || 'forex'
           const actionStr = normalizedRow['action'] || normalizedRow['direction'] || ''
-          const action = actionStr.toLowerCase().includes('sell') ? 'sell' : 'buy'
+          const bias = actionStr.toLowerCase().includes('sell') ? 'BEARISH' : 'BULLISH'
 
-          const entryPrice = parseFloat(normalizedRow['open price'] || normalizedRow['entry'] || normalizedRow['price'] || '0')
-          const exitPriceStr = normalizedRow['close price'] || normalizedRow['exit'] || normalizedRow['close']
-          const exitPrice = exitPriceStr ? parseFloat(exitPriceStr) : null
+          const profitLossStr = normalizedRow['profit'] || normalizedRow['p/l'] || normalizedRow['pnL']
+          const profitLoss = profitLossStr ? parseFloat(profitLossStr) : null
           
-          const quantity = parseFloat(normalizedRow['size'] || normalizedRow['volume'] || normalizedRow['quantity'] || '0')
-          const profitLoss = parseFloat(normalizedRow['profit'] || normalizedRow['p/l'] || normalizedRow['pnL'] || '0')
+          let winLoss = 'PENDING'
+          if (profitLoss !== null) {
+            winLoss = profitLoss > 0 ? 'WIN' : profitLoss < 0 ? 'LOSS' : 'BREAKEVEN'
+          }
           
           const entryDateStr = normalizedRow['open time'] || normalizedRow['time'] || normalizedRow['date']
-          const exitDateStr = normalizedRow['close time'] || normalizedRow['exittime']
-          
-          const entryDate = entryDateStr ? new Date(entryDateStr) : new Date()
-          const exitDate = exitDateStr ? new Date(exitDateStr) : null
+          const date = entryDateStr ? new Date(entryDateStr) : new Date()
 
-          if (!symbol || isNaN(entryPrice)) {
-            errors.push(`Row ${i + 1} is missing required symbol or price.`)
+          if (!symbol) {
+            errors.push(`Row ${i + 1} is missing required symbol.`)
             continue
           }
 
@@ -68,16 +65,11 @@ router.post('/csv', upload.single('file'), async (req: AuthRequest, res: Respons
               data: {
                 userId: req.userId!,
                 symbol,
-                tradeType,
-                action,
-                entryPrice,
-                exitPrice,
-                quantity,
+                bias: bias as any,
+                date,
                 profitLoss,
-                status: exitPrice ? 'closed' : 'open',
-                entryDate,
-                exitDate,
-                notes: 'Imported via CSV',
+                winLoss: winLoss as any,
+                comment: 'Imported via CSV',
               },
             })
             imported++

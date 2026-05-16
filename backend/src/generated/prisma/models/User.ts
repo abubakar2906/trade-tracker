@@ -230,7 +230,6 @@ export type UserWhereInput = {
   preferredMarkets?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  brokerAccounts?: Prisma.BrokerAccountListRelationFilter
   trades?: Prisma.TradeListRelationFilter
   strategies?: Prisma.StrategyListRelationFilter
 }
@@ -247,7 +246,6 @@ export type UserOrderByWithRelationInput = {
   preferredMarkets?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  brokerAccounts?: Prisma.BrokerAccountOrderByRelationAggregateInput
   trades?: Prisma.TradeOrderByRelationAggregateInput
   strategies?: Prisma.StrategyOrderByRelationAggregateInput
 }
@@ -267,7 +265,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   preferredMarkets?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  brokerAccounts?: Prisma.BrokerAccountListRelationFilter
   trades?: Prisma.TradeListRelationFilter
   strategies?: Prisma.StrategyListRelationFilter
 }, "id" | "email">
@@ -318,7 +315,6 @@ export type UserCreateInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  brokerAccounts?: Prisma.BrokerAccountCreateNestedManyWithoutUserInput
   trades?: Prisma.TradeCreateNestedManyWithoutUserInput
   strategies?: Prisma.StrategyCreateNestedManyWithoutUserInput
 }
@@ -335,7 +331,6 @@ export type UserUncheckedCreateInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  brokerAccounts?: Prisma.BrokerAccountUncheckedCreateNestedManyWithoutUserInput
   trades?: Prisma.TradeUncheckedCreateNestedManyWithoutUserInput
   strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutUserInput
 }
@@ -352,7 +347,6 @@ export type UserUpdateInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  brokerAccounts?: Prisma.BrokerAccountUpdateManyWithoutUserNestedInput
   trades?: Prisma.TradeUpdateManyWithoutUserNestedInput
   strategies?: Prisma.StrategyUpdateManyWithoutUserNestedInput
 }
@@ -369,7 +363,6 @@ export type UserUncheckedUpdateInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  brokerAccounts?: Prisma.BrokerAccountUncheckedUpdateManyWithoutUserNestedInput
   trades?: Prisma.TradeUncheckedUpdateManyWithoutUserNestedInput
   strategies?: Prisma.StrategyUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -475,20 +468,6 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
-export type UserCreateNestedOneWithoutBrokerAccountsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutBrokerAccountsInput, Prisma.UserUncheckedCreateWithoutBrokerAccountsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBrokerAccountsInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutBrokerAccountsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutBrokerAccountsInput, Prisma.UserUncheckedCreateWithoutBrokerAccountsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBrokerAccountsInput
-  upsert?: Prisma.UserUpsertWithoutBrokerAccountsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBrokerAccountsInput, Prisma.UserUpdateWithoutBrokerAccountsInput>, Prisma.UserUncheckedUpdateWithoutBrokerAccountsInput>
-}
-
 export type UserCreateNestedOneWithoutTradesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutTradesInput, Prisma.UserUncheckedCreateWithoutTradesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutTradesInput
@@ -517,86 +496,6 @@ export type UserUpdateOneRequiredWithoutStrategiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStrategiesInput, Prisma.UserUpdateWithoutStrategiesInput>, Prisma.UserUncheckedUpdateWithoutStrategiesInput>
 }
 
-export type UserCreateWithoutBrokerAccountsInput = {
-  id?: string
-  email: string
-  password: string
-  fullName?: string | null
-  phone?: string | null
-  location?: string | null
-  bio?: string | null
-  tradingStyle?: string | null
-  preferredMarkets?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  trades?: Prisma.TradeCreateNestedManyWithoutUserInput
-  strategies?: Prisma.StrategyCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutBrokerAccountsInput = {
-  id?: string
-  email: string
-  password: string
-  fullName?: string | null
-  phone?: string | null
-  location?: string | null
-  bio?: string | null
-  tradingStyle?: string | null
-  preferredMarkets?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  trades?: Prisma.TradeUncheckedCreateNestedManyWithoutUserInput
-  strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutBrokerAccountsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutBrokerAccountsInput, Prisma.UserUncheckedCreateWithoutBrokerAccountsInput>
-}
-
-export type UserUpsertWithoutBrokerAccountsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutBrokerAccountsInput, Prisma.UserUncheckedUpdateWithoutBrokerAccountsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutBrokerAccountsInput, Prisma.UserUncheckedCreateWithoutBrokerAccountsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutBrokerAccountsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutBrokerAccountsInput, Prisma.UserUncheckedUpdateWithoutBrokerAccountsInput>
-}
-
-export type UserUpdateWithoutBrokerAccountsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tradingStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  trades?: Prisma.TradeUpdateManyWithoutUserNestedInput
-  strategies?: Prisma.StrategyUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutBrokerAccountsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tradingStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  trades?: Prisma.TradeUncheckedUpdateManyWithoutUserNestedInput
-  strategies?: Prisma.StrategyUncheckedUpdateManyWithoutUserNestedInput
-}
-
 export type UserCreateWithoutTradesInput = {
   id?: string
   email: string
@@ -609,7 +508,6 @@ export type UserCreateWithoutTradesInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  brokerAccounts?: Prisma.BrokerAccountCreateNestedManyWithoutUserInput
   strategies?: Prisma.StrategyCreateNestedManyWithoutUserInput
 }
 
@@ -625,7 +523,6 @@ export type UserUncheckedCreateWithoutTradesInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  brokerAccounts?: Prisma.BrokerAccountUncheckedCreateNestedManyWithoutUserInput
   strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -657,7 +554,6 @@ export type UserUpdateWithoutTradesInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  brokerAccounts?: Prisma.BrokerAccountUpdateManyWithoutUserNestedInput
   strategies?: Prisma.StrategyUpdateManyWithoutUserNestedInput
 }
 
@@ -673,7 +569,6 @@ export type UserUncheckedUpdateWithoutTradesInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  brokerAccounts?: Prisma.BrokerAccountUncheckedUpdateManyWithoutUserNestedInput
   strategies?: Prisma.StrategyUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -689,7 +584,6 @@ export type UserCreateWithoutStrategiesInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  brokerAccounts?: Prisma.BrokerAccountCreateNestedManyWithoutUserInput
   trades?: Prisma.TradeCreateNestedManyWithoutUserInput
 }
 
@@ -705,7 +599,6 @@ export type UserUncheckedCreateWithoutStrategiesInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  brokerAccounts?: Prisma.BrokerAccountUncheckedCreateNestedManyWithoutUserInput
   trades?: Prisma.TradeUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -737,7 +630,6 @@ export type UserUpdateWithoutStrategiesInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  brokerAccounts?: Prisma.BrokerAccountUpdateManyWithoutUserNestedInput
   trades?: Prisma.TradeUpdateManyWithoutUserNestedInput
 }
 
@@ -753,7 +645,6 @@ export type UserUncheckedUpdateWithoutStrategiesInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  brokerAccounts?: Prisma.BrokerAccountUncheckedUpdateManyWithoutUserNestedInput
   trades?: Prisma.TradeUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -763,13 +654,11 @@ export type UserUncheckedUpdateWithoutStrategiesInput = {
  */
 
 export type UserCountOutputType = {
-  brokerAccounts: number
   trades: number
   strategies: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  brokerAccounts?: boolean | UserCountOutputTypeCountBrokerAccountsArgs
   trades?: boolean | UserCountOutputTypeCountTradesArgs
   strategies?: boolean | UserCountOutputTypeCountStrategiesArgs
 }
@@ -782,13 +671,6 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountBrokerAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.BrokerAccountWhereInput
 }
 
 /**
@@ -818,7 +700,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   preferredMarkets?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  brokerAccounts?: boolean | Prisma.User$brokerAccountsArgs<ExtArgs>
   trades?: boolean | Prisma.User$tradesArgs<ExtArgs>
   strategies?: boolean | Prisma.User$strategiesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -868,7 +749,6 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "fullName" | "phone" | "location" | "bio" | "tradingStyle" | "preferredMarkets" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  brokerAccounts?: boolean | Prisma.User$brokerAccountsArgs<ExtArgs>
   trades?: boolean | Prisma.User$tradesArgs<ExtArgs>
   strategies?: boolean | Prisma.User$strategiesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -879,7 +759,6 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    brokerAccounts: Prisma.$BrokerAccountPayload<ExtArgs>[]
     trades: Prisma.$TradePayload<ExtArgs>[]
     strategies: Prisma.$StrategyPayload<ExtArgs>[]
   }
@@ -1289,7 +1168,6 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  brokerAccounts<T extends Prisma.User$brokerAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$brokerAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BrokerAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   trades<T extends Prisma.User$tradesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tradesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TradePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   strategies<T extends Prisma.User$strategiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$strategiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StrategyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1722,30 +1600,6 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
-}
-
-/**
- * User.brokerAccounts
- */
-export type User$brokerAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the BrokerAccount
-   */
-  select?: Prisma.BrokerAccountSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the BrokerAccount
-   */
-  omit?: Prisma.BrokerAccountOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.BrokerAccountInclude<ExtArgs> | null
-  where?: Prisma.BrokerAccountWhereInput
-  orderBy?: Prisma.BrokerAccountOrderByWithRelationInput | Prisma.BrokerAccountOrderByWithRelationInput[]
-  cursor?: Prisma.BrokerAccountWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.BrokerAccountScalarFieldEnum | Prisma.BrokerAccountScalarFieldEnum[]
 }
 
 /**
