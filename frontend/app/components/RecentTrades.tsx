@@ -4,9 +4,10 @@ import { useEffect, useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { getTrades } from "../lib/trades"
+import type { Trade } from "../types/trade"
 
 export default function RecentTrades() {
-  const [trades, setTrades] = useState<any[]>([])
+  const [trades, setTrades] = useState<Trade[]>([])
 
   useEffect(() => {
     getTrades().then(setTrades).catch(console.error)
@@ -16,27 +17,36 @@ export default function RecentTrades() {
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>Date</TableHead>
           <TableHead>Symbol</TableHead>
-          <TableHead>Entry Price</TableHead>
-          <TableHead>Exit Price</TableHead>
-          <TableHead>Quantity</TableHead>
+          <TableHead>Bias</TableHead>
+          <TableHead>Setups</TableHead>
           <TableHead>P/L</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Result</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {trades.slice(0, 5).map((trade) => (
           <TableRow key={trade.id}>
+            <TableCell>{new Date(trade.date).toLocaleDateString()}</TableCell>
             <TableCell className="font-medium">{trade.symbol}</TableCell>
-            <TableCell>${Number(trade.entryPrice).toFixed(2)}</TableCell>
-            <TableCell>{trade.exitPrice ? `$${Number(trade.exitPrice).toFixed(2)}` : "—"}</TableCell>
-            <TableCell>{trade.quantity}</TableCell>
-            <TableCell className={Number(trade.profitLoss) >= 0 ? "text-green-500" : "text-red-500"}>
-              {trade.profitLoss != null ? `$${Number(trade.profitLoss).toFixed(2)}` : "—"}
+            <TableCell>
+              <Badge variant="outline">{trade.bias}</Badge>
             </TableCell>
             <TableCell>
-              <Badge variant={trade.status === "open" ? "secondary" : Number(trade.profitLoss) >= 0 ? "default" : "destructive"}>
-                {trade.status === "open" ? "Open" : Number(trade.profitLoss) >= 0 ? "Profit" : "Loss"}
+              {trade.setups?.length ? (
+                <div className="flex gap-1 flex-wrap">
+                  {trade.setups.slice(0, 2).map((s) => <Badge key={s} variant="secondary" className="text-[10px]">{s}</Badge>)}
+                  {trade.setups.length > 2 && <span className="text-[10px] text-muted-foreground">+{trade.setups.length - 2}</span>}
+                </div>
+              ) : "—"}
+            </TableCell>
+            <TableCell className={trade.profitLoss && trade.profitLoss >= 0 ? "text-green-500 font-medium" : trade.profitLoss && trade.profitLoss < 0 ? "text-red-500 font-medium" : ""}>
+              {trade.profitLoss != null ? `${trade.profitLoss >= 0 ? "+" : ""}$${Math.abs(trade.profitLoss).toFixed(2)}` : "—"}
+            </TableCell>
+            <TableCell>
+              <Badge variant={trade.winLoss === "WIN" ? "default" : trade.winLoss === "LOSS" ? "destructive" : "secondary"}>
+                {trade.winLoss || "PENDING"}
               </Badge>
             </TableCell>
           </TableRow>

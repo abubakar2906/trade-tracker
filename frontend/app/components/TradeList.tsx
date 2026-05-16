@@ -9,11 +9,11 @@ import {
   TableHead, TableHeader, TableRow
 } from "@/components/ui/table"
 import {
-  TrendingUp, TrendingDown, DollarSign,
-  Target, BarChart2, Flame, Trash2
+  DollarSign, Target, BarChart2, Flame, Trash2
 } from "lucide-react"
 import { apiFetch } from "../lib/api"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, Legend, Cell } from 'recharts'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts'
+import type { Trade } from "../types/trade"
 
 interface TradeListProps {
   showChartOnly?: boolean
@@ -21,12 +21,12 @@ interface TradeListProps {
 }
 
 export default function TradeList({ showChartOnly, showTableOnly }: TradeListProps) {
-  const [trades, setTrades] = useState<any[]>([])
+  const [trades, setTrades] = useState<Trade[]>([])
   const [loading, setLoading] = useState(true)
 
   const fetchTrades = () => {
     getTrades()
-      .then((data: any[]) => {
+      .then((data: Trade[]) => {
         setTrades(data)
         setLoading(false)
       })
@@ -49,22 +49,23 @@ export default function TradeList({ showChartOnly, showTableOnly }: TradeListPro
 
   // --- Stats calculations ---
   const totalPnL = trades.reduce((sum, t) => sum + Number(t.profitLoss ?? 0), 0)
-  const totalInvested = trades.reduce((sum, t) => sum + Number(t.amountInvested ?? 0), 0)
-  const wins = trades.filter((t) => Number(t.profitLoss ?? 0) > 0)
-  const losses = trades.filter((t) => Number(t.profitLoss ?? 0) < 0)
+  const wins = trades.filter((t) => t.winLoss === "WIN" || Number(t.profitLoss) > 0)
+  const losses = trades.filter((t) => t.winLoss === "LOSS" || Number(t.profitLoss) < 0)
   const winRate = trades.length > 0 ? (wins.length / trades.length) * 100 : 0
 
   // Win/loss streak
   let currentStreak = 0
   let streakType = ""
   for (let i = 0; i < trades.length; i++) {
-    const pl = Number(trades[i].profitLoss ?? 0)
+    const isWin = trades[i].winLoss === "WIN" || Number(trades[i].profitLoss) > 0
+    const isLoss = trades[i].winLoss === "LOSS" || Number(trades[i].profitLoss) < 0
     if (i === 0) {
       currentStreak = 1
-      streakType = pl > 0 ? "win" : pl < 0 ? "loss" : ""
+      streakType = isWin ? "win" : isLoss ? "loss" : ""
     } else {
-      const prevPl = Number(trades[i - 1].profitLoss ?? 0)
-      const same = (pl > 0 && prevPl > 0) || (pl < 0 && prevPl < 0)
+      const prevIsWin = trades[i - 1].winLoss === "WIN" || Number(trades[i - 1].profitLoss) > 0
+      const prevIsLoss = trades[i - 1].winLoss === "LOSS" || Number(trades[i - 1].profitLoss) < 0
+      const same = (isWin && prevIsWin) || (isLoss && prevIsLoss)
       if (same) currentStreak++
       else break
     }
@@ -74,15 +75,8 @@ export default function TradeList({ showChartOnly, showTableOnly }: TradeListPro
   let running = 0
   const tradesWithRunning = [...trades].reverse().map((t) => {
     running += Number(t.profitLoss ?? 0)
-    return { ...t, runningPnL: running, displayDate: new Date(t.entryDate).toLocaleDateString() }
+    return { ...t, runningPnL: running, displayDate: new Date(t.date).toLocaleDateString() }
   }).reverse()
-
-  // Smart column visibility checks
-  const hasInvested = tradesWithRunning.some(t => t.amountInvested !== null && t.amountInvested !== undefined)
-  const hasSLTP = tradesWithRunning.some(t => t.stopLoss !== null || t.takeProfit !== null)
-  const hasRR = tradesWithRunning.some(t => t.riskRewardRatio !== null && t.riskRewardRatio !== undefined)
-  const hasGain = tradesWithRunning.some(t => t.percentageGain !== null && t.percentageGain !== undefined)
-  const hasEmotion = tradesWithRunning.some(t => !!t.emotionalState)
 
   // Data for Asset Performance chart
   const assetMap: Record<string, number> = {}
@@ -94,17 +88,11 @@ export default function TradeList({ showChartOnly, showTableOnly }: TradeListPro
     .map(([symbol, profit]) => ({ symbol, profit }))
     .sort((a, b) => b.profit - a.profit)
 
-  if (loading) {
-    return <p className="text-muted-foreground text-center py-8">Loading trades...</p>
-  }
-
-  if (trades.length === 0) {
-    return <p className="text-muted-foreground text-center py-8">No trades logged yet.</p>
-  }
+  if (loading) return <p className="text-muted-foreground text-center py-8">Loading trades...</p>
+  if (trades.length === 0) return <p className="text-muted-foreground text-center py-8">No trades logged yet.</p>
 
   return (
     <div className="space-y-6">
-
       {/* Summary Cards */}
       {!showChartOnly && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -117,11 +105,6 @@ export default function TradeList({ showChartOnly, showTableOnly }: TradeListPro
               <div className={`text-2xl font-bold ${totalPnL >= 0 ? "text-green-500" : "text-red-500"}`}>
                 {totalPnL >= 0 ? "+" : ""}${totalPnL.toFixed(2)}
               </div>
-              {totalInvested > 0 && (
-                <p className="text-xs text-muted-foreground">
-                  from ${totalInvested.toFixed(2)} invested
-                </p>
-              )}
             </CardContent>
           </Card>
 
@@ -147,9 +130,6 @@ export default function TradeList({ showChartOnly, showTableOnly }: TradeListPro
               <div className={`text-2xl font-bold ${streakType === "win" ? "text-green-500" : streakType === "loss" ? "text-red-500" : ""}`}>
                 {currentStreak} {streakType === "win" ? "W" : streakType === "loss" ? "L" : "-"}
               </div>
-              <p className="text-xs text-muted-foreground">
-                {streakType === "win" ? "Winning streak" : streakType === "loss" ? "Losing streak" : "No streak"}
-              </p>
             </CardContent>
           </Card>
 
@@ -160,9 +140,6 @@ export default function TradeList({ showChartOnly, showTableOnly }: TradeListPro
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{trades.length}</div>
-              <p className="text-xs text-muted-foreground">
-                {trades.filter((t) => t.status === "open").length} open
-              </p>
             </CardContent>
           </Card>
         </div>
@@ -176,19 +153,13 @@ export default function TradeList({ showChartOnly, showTableOnly }: TradeListPro
               <TableRow>
                 <TableHead>Date</TableHead>
                 <TableHead>Symbol</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Action</TableHead>
-                <TableHead>Entry</TableHead>
-                <TableHead>Exit</TableHead>
-                <TableHead>Qty</TableHead>
-                {hasInvested && <TableHead>Invested</TableHead>}
-                {hasSLTP && <TableHead>SL / TP</TableHead>}
-                {hasRR && <TableHead>R:R</TableHead>}
+                <TableHead>Bias</TableHead>
+                <TableHead>Tags</TableHead>
+                <TableHead>Trigger</TableHead>
+                <TableHead>R:R</TableHead>
                 <TableHead>P&L</TableHead>
-                {hasGain && <TableHead>% Gain</TableHead>}
                 <TableHead>Running</TableHead>
-                {hasEmotion && <TableHead>Emotion</TableHead>}
-                <TableHead>Status</TableHead>
+                <TableHead>Result</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
@@ -197,86 +168,46 @@ export default function TradeList({ showChartOnly, showTableOnly }: TradeListPro
                 const pl = Number(trade.profitLoss ?? 0)
                 const pnlColor = pl > 0 ? "text-green-500" : pl < 0 ? "text-red-500" : ""
                 const runningColor = trade.runningPnL > 0 ? "text-green-500" : trade.runningPnL < 0 ? "text-red-500" : ""
-                const duration = trade.exitDate
-                  ? Math.ceil((new Date(trade.exitDate).getTime() - new Date(trade.entryDate).getTime()) / (1000 * 60 * 60 * 24))
-                  : null
 
                 return (
                   <TableRow key={trade.id}>
                     <TableCell className="whitespace-nowrap">
-                      <div>{new Date(trade.entryDate).toLocaleDateString()}</div>
-                      {duration !== null && (
-                        <div className="text-xs text-muted-foreground">{duration}d</div>
-                      )}
+                      <div>{new Date(trade.date).toLocaleDateString()}</div>
+                      {trade.tradeDuration && <div className="text-xs text-muted-foreground">{trade.tradeDuration}</div>}
                     </TableCell>
-                    <TableCell className="font-medium">{trade.symbol}</TableCell>
-                    <TableCell className="capitalize">{trade.tradeType}</TableCell>
+                    <TableCell className="font-bold">{trade.symbol}</TableCell>
                     <TableCell>
-                      <Badge variant={trade.action === "buy" ? "default" : "secondary"}>
-                        {trade.action === "buy" ? "Long" : "Short"}
+                      <Badge variant="outline" className={trade.bias === "BULLISH" ? "text-green-500 border-green-500/20" : trade.bias === "BEARISH" ? "text-red-500 border-red-500/20" : ""}>
+                        {trade.bias}
                       </Badge>
                     </TableCell>
-                    <TableCell>${Number(trade.entryPrice).toFixed(4)}</TableCell>
                     <TableCell>
-                      {trade.exitPrice ? `$${Number(trade.exitPrice).toFixed(4)}` : "-"}
+                      <div className="flex flex-wrap gap-1 max-w-[150px]">
+                        {trade.setups?.map(s => <Badge key={s} variant="secondary" className="text-[10px]">{s}</Badge>)}
+                        {trade.timeframes?.map(t => <Badge key={t} variant="outline" className="text-[10px]">{t}</Badge>)}
+                      </div>
                     </TableCell>
-                    <TableCell>{trade.quantity}</TableCell>
-                    {hasInvested && (
-                      <TableCell>
-                        {trade.amountInvested ? `$${Number(trade.amountInvested).toFixed(2)}` : "-"}
-                      </TableCell>
-                    )}
-                    {hasSLTP && (
-                      <TableCell className="whitespace-nowrap">
-                        <span className="text-red-400 text-xs">
-                          {trade.stopLoss ? `SL $${Number(trade.stopLoss).toFixed(2)}` : "-"}
-                        </span>
-                        <br />
-                        <span className="text-green-400 text-xs">
-                          {trade.takeProfit ? `TP $${Number(trade.takeProfit).toFixed(2)}` : "-"}
-                        </span>
-                      </TableCell>
-                    )}
-                    {hasRR && (
-                      <TableCell>
-                        {trade.riskRewardRatio
-                          ? `1:${Number(trade.riskRewardRatio).toFixed(2)}`
-                          : "-"}
-                      </TableCell>
-                    )}
+                    <TableCell className="text-xs text-muted-foreground max-w-[120px] truncate" title={trade.entryPoint || ""}>
+                      {trade.entryPoint || "—"}
+                    </TableCell>
+                    <TableCell className="font-medium text-muted-foreground">
+                      {trade.riskReward || "—"}
+                    </TableCell>
                     <TableCell className={`font-medium ${pnlColor}`}>
                       {trade.profitLoss !== null
-                        ? `${pl >= 0 ? "+" : ""}$${pl.toFixed(2)}`
-                        : "-"}
+                        ? `${pl >= 0 ? "+" : ""}$${Math.abs(pl).toFixed(2)}`
+                        : "—"}
                     </TableCell>
-                    {hasGain && (
-                      <TableCell className={pnlColor}>
-                        {trade.percentageGain !== null
-                          ? `${Number(trade.percentageGain) >= 0 ? "+" : ""}${Number(trade.percentageGain).toFixed(2)}%`
-                          : "-"}
-                      </TableCell>
-                    )}
                     <TableCell className={`font-medium ${runningColor}`}>
-                      {trade.runningPnL >= 0 ? "+" : ""}${trade.runningPnL.toFixed(2)}
+                      {trade.runningPnL >= 0 ? "+" : ""}${Math.abs(trade.runningPnL).toFixed(2)}
                     </TableCell>
-                    {hasEmotion && (
-                      <TableCell>
-                        {trade.emotionalState ? (
-                          <Badge variant="outline" className="text-xs">{trade.emotionalState}</Badge>
-                        ) : "-"}
-                      </TableCell>
-                    )}
                     <TableCell>
-                      <Badge variant={trade.status === "open" ? "secondary" : pl > 0 ? "default" : "destructive"}>
-                        {trade.status}
+                      <Badge variant={trade.winLoss === "WIN" ? "default" : trade.winLoss === "LOSS" ? "destructive" : "secondary"}>
+                        {trade.winLoss || "PENDING"}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDelete(trade.id)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => handleDelete(trade.id)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </TableCell>
@@ -307,38 +238,8 @@ export default function TradeList({ showChartOnly, showTableOnly }: TradeListPro
                 <RechartsTooltip 
                   contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px', border: '1px solid #333', color: '#f3f4f6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   formatter={(value: number) => [`$${value.toFixed(2)}`, 'Running P&L']}
-                  labelStyle={{ color: '#9ca3af', marginBottom: '4px' }}
                 />
-                <Area
-                  type="monotone"
-                  dataKey="runningPnL"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  fillOpacity={1}
-                  fill="url(#colorPnL)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="h-[300px] w-full pt-10 col-span-1 lg:col-span-2">
-            <h3 className="text-lg font-semibold mb-4">Profit by Asset</h3>
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={assetData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorAssetList" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
-                <XAxis dataKey="symbol" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
-                <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(value: number) => `$${value}`} tickMargin={10} />
-                <RechartsTooltip 
-                  contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px', border: '1px solid #333', color: '#f3f4f6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  formatter={(value: number) => [`$${value.toFixed(2)}`, 'Profit']}
-                />
-                <Area type="monotone" dataKey="profit" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorAssetList)" strokeWidth={2} />
+                <Area type="monotone" dataKey="runningPnL" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorPnL)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>

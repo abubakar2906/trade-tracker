@@ -9,7 +9,6 @@ import authRoutes from './routes/auth.js'
 import tradeRoutes from './routes/trades.js'
 import strategyRoutes from './routes/strategies.js'
 import profileRoutes from './routes/profile.js'
-import brokerRoutes from './routes/broker.js'
 import importRoutes from './routes/import.js'
 import newsRoutes from './routes/news.js'
 
@@ -39,7 +38,6 @@ const authLimiter = rateLimit({
 })
 
 app.use('/api/auth', authLimiter, authRoutes)
-app.use('/api/broker', brokerRoutes)
 app.use('/api/trades', tradeRoutes)
 app.use('/api/import', importRoutes)
 app.use('/api/strategies', strategyRoutes)

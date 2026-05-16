@@ -1,9 +1,8 @@
 "use client"
-
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts"
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts"
 import type { Trade } from "../types/trade"
 
 interface TradeStatisticsProps {
@@ -12,7 +11,6 @@ interface TradeStatisticsProps {
 
 export default function TradeStatistics({ trades }: TradeStatisticsProps) {
   const [timeframe, setTimeframe] = useState("all")
-  const [tradeType, setTradeType] = useState("all")
 
   const calculateStatistics = (filteredTrades: Trade[]) => {
     let totalProfit = 0
@@ -23,28 +21,25 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
     let longestWinStreak = 0
     let longestLoseStreak = 0
     let currentStreak = 0
-    let totalPips = 0
-    let profitFactor = 0
     let grossProfit = 0
     let grossLoss = 0
 
     const profitBySymbol: { [key: string]: number } = {}
     const tradesByDay: { [key: string]: number } = {}
 
-    filteredTrades.forEach((trade, index) => {
-      const profit = trade.profitLoss !== null && trade.profitLoss !== undefined
-        ? Number(trade.profitLoss)
-        : (Number(trade.exitPrice) - Number(trade.entryPrice)) *
-          Number(trade.quantity) *
-          (trade.action === "buy" ? 1 : -1)
+    filteredTrades.forEach((trade) => {
+      const profit = Number(trade.profitLoss ?? 0)
       totalProfit += profit
 
-      if (profit > 0) {
+      const isWin = trade.winLoss === "WIN" || profit > 0
+      const isLoss = trade.winLoss === "LOSS" || profit < 0
+
+      if (isWin) {
         winCount++
         grossProfit += profit
         currentStreak = currentStreak > 0 ? currentStreak + 1 : 1
         longestWinStreak = Math.max(longestWinStreak, currentStreak)
-      } else {
+      } else if (isLoss) {
         lossCount++
         grossLoss -= profit
         currentStreak = currentStreak < 0 ? currentStreak - 1 : -1
@@ -58,23 +53,17 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
         if (drawdown > maxDrawdown) maxDrawdown = drawdown
       }
 
-      // Calculate pips for forex trades
-      if (trade.tradeType === "forex" && trade.exitPrice) {
-        const pipValue = trade.symbol.includes("JPY") ? 0.01 : 0.0001
-        totalPips += Math.abs(Number(trade.exitPrice) - Number(trade.entryPrice)) / pipValue
-      }
-
       // Profit by symbol
       profitBySymbol[trade.symbol] = (profitBySymbol[trade.symbol] || 0) + profit
 
       // Trades by day
-      const tradeDate = new Date(trade.entryDate).toISOString().split("T")[0]
+      const tradeDate = new Date(trade.date).toISOString().split("T")[0]
       tradesByDay[tradeDate] = (tradesByDay[tradeDate] || 0) + 1
     })
 
     const totalTrades = winCount + lossCount
     const winRate = totalTrades > 0 ? winCount / totalTrades : 0
-    profitFactor = grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? Infinity : 0
+    const profitFactor = grossLoss > 0 ? grossProfit / grossLoss : grossProfit > 0 ? Infinity : 0
 
     return {
       totalProfit,
@@ -82,7 +71,6 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
       maxDrawdown,
       longestWinStreak,
       longestLoseStreak,
-      totalPips: totalPips.toFixed(1),
       profitFactor: isFinite(profitFactor) ? profitFactor.toFixed(2) : "∞",
       profitBySymbol,
       tradesByDay,
@@ -91,7 +79,7 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
     }
   }
 
-  const filterTrades = (period: string, type: string) => {
+  const filterTrades = (period: string) => {
     const now = new Date()
     const periodStart = new Date()
 
@@ -105,16 +93,12 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
       case "year":
         periodStart.setFullYear(now.getFullYear() - 1)
         break
-      default:
-      // Do nothing for "all" timeframe
     }
 
-    return trades.filter(
-      (trade) => (period === "all" || new Date(trade.entryDate) >= periodStart) && (type === "all" || trade.tradeType=== type),
-    )
+    return trades.filter((trade) => period === "all" || new Date(trade.date) >= periodStart)
   }
 
-  const filteredTrades = filterTrades(timeframe, tradeType)
+  const filteredTrades = filterTrades(timeframe)
   const stats = calculateStatistics(filteredTrades)
 
   const profitBySymbolData = Object.entries(stats.profitBySymbol).map(([symbol, profit]) => ({ symbol, profit }))
@@ -124,162 +108,64 @@ export default function TradeStatistics({ trades }: TradeStatisticsProps) {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Trade Statistics</h2>
-        <div className="flex space-x-2">
-          <Select value={timeframe} onValueChange={setTimeframe}>
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Timeframe" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Time</SelectItem>
-              <SelectItem value="year">Past Year</SelectItem>
-              <SelectItem value="month">Past Month</SelectItem>
-              <SelectItem value="week">Past Week</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={tradeType} onValueChange={setTradeType}>
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Trade Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="forex">Forex</SelectItem>
-              <SelectItem value="crypto">Crypto</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Select value={timeframe} onValueChange={setTimeframe}>
+          <SelectTrigger className="w-[150px]">
+            <SelectValue placeholder="Timeframe" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Time</SelectItem>
+            <SelectItem value="year">Past Year</SelectItem>
+            <SelectItem value="month">Past Month</SelectItem>
+            <SelectItem value="week">Past Week</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Total Profit</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">${stats.totalProfit.toFixed(2)}</div></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Win Rate</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{(stats.winRate * 100).toFixed(2)}%</div></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Max Drawdown</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">${stats.maxDrawdown.toFixed(2)}</div></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Profit Factor</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{stats.profitFactor}</div></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Total Trades</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{stats.totalTrades}</div></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Avg Profit/Trade</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">${stats.averageProfit.toFixed(2)}</div></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Longest Win Streak</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{stats.longestWinStreak}</div></CardContent></Card>
+        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Longest Loss Streak</CardTitle></CardHeader><CardContent><div className="text-2xl font-bold">{stats.longestLoseStreak}</div></CardContent></Card>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Profit</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle>Profit by Symbol</CardTitle></CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${stats.totalProfit.toFixed(2)}</div>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={profitBySymbolData}>
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                  <XAxis dataKey="symbol" fontSize={11} />
+                  <YAxis fontSize={11} tickFormatter={(v: number) => `$${v}`} />
+                  <Tooltip contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px' }} />
+                  <Area type="monotone" dataKey="profit" stroke="#10b981" fill="#10b981" fillOpacity={0.2} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Win Rate</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle>Trades per Day</CardTitle></CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{(stats.winRate * 100).toFixed(2)}%</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Max Drawdown</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${stats.maxDrawdown.toFixed(2)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Profit Factor</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.profitFactor}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Trades</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalTrades}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Profit</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${stats.averageProfit.toFixed(2)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Longest Win Streak</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.longestWinStreak}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Longest Lose Streak</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.longestLoseStreak}</div>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={tradesByDayData}>
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                  <XAxis dataKey="date" fontSize={11} />
+                  <YAxis fontSize={11} />
+                  <Tooltip contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px' }} />
+                  <Area type="step" dataKey="count" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
       </div>
-      {tradeType === "forex" && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Pips</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalPips}</div>
-          </CardContent>
-        </Card>
-      )}
-      <Card>
-        <CardHeader>
-          <CardTitle>Profit by Symbol</CardTitle>
-          <CardDescription>Total profit for each traded symbol</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={profitBySymbolData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorProfitSymbol" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
-                <XAxis dataKey="symbol" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
-                <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val: number) => `$${val}`} tickMargin={10} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px', border: '1px solid #333', color: '#f3f4f6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  formatter={(value: number) => [`$${value.toFixed(2)}`, 'Profit']}
-                />
-                <Area type="monotone" dataKey="profit" stroke="#10b981" fillOpacity={1} fill="url(#colorProfitSymbol)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Trades by Day</CardTitle>
-          <CardDescription>Number of trades executed each day</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={tradesByDayData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorTradesDay" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
-                <XAxis dataKey="date" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
-                <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} tickMargin={10} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#1c1c1c', borderRadius: '8px', border: '1px solid #333', color: '#f3f4f6', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                />
-                <Area type="monotone" dataKey="count" stroke="#3b82f6" fillOpacity={1} fill="url(#colorTradesDay)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }
-
