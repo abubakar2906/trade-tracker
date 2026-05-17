@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-const port = parseInt(process.env.SMTP_PORT || '465');
+const port = parseInt(process.env.SMTP_PORT || '587');
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
