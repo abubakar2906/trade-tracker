@@ -4,11 +4,11 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ThemeProvider } from '@/components/theme-provider'
 import { BarChart, Brain, Book, Target, Shield, Globe, Sparkles, LineChart, FileText, ChevronRight } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
 import Tilt from 'react-parallax-tilt'
 
 export default function LandingPage() {
-  const FADE_UP = {
+  const FADE_UP: Variants = {
     hidden: { opacity: 0, y: 40 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
   }
