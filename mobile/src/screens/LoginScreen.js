@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radius, typography } from '../theme';
 import { login } from '../lib/api';
-import { useAuth } from '../navigation/RootNavigator';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');

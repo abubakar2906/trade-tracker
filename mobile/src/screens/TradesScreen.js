@@ -1,26 +1,77 @@
 import React, { useState } from 'react';
-import {
-  View, Text, ScrollView, StyleSheet, TouchableOpacity,
-} from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radius, typography } from '../theme';
 import { Card, EmptyState, SegmentedControl } from '../components/shared';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '../lib/api';
 
 const TABS = ['All Trades', 'Performance', 'Import'];
 
 // ── All Trades Tab ─────────────────────────────────────────────────────────────
 function AllTradesTab({ navigation }) {
+  const { data: trades = [], isLoading } = useQuery({
+    queryKey: ['trades'],
+    queryFn: () => apiFetch('/api/trades'),
+  });
+
+  if (isLoading) {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text style={{ color: colors.textSecondary }}>Loading...</Text></View>;
+  }
+
+  if (trades.length === 0) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <EmptyState
+          icon="receipt-outline"
+          title="No trades logged"
+          subtitle="Use the Log Trade button above to add your first trade."
+          action="Log Trade"
+          onAction={() => navigation.navigate('AddTrade')}
+        />
+      </View>
+    );
+  }
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center' }}>
-      <EmptyState
-        icon="receipt-outline"
-        title="No trades logged"
-        subtitle="Use the Log Trade button above to add your first trade."
-        action="Log Trade"
-        onAction={() => navigation.navigate('AddTrade')}
-      />
-    </View>
+    <FlatList
+      data={trades}
+      keyExtractor={t => t.id}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 120, paddingTop: spacing.sm }}
+      renderItem={({ item: trade }) => (
+        <Card style={styles.tradeCard}>
+          <View style={styles.tradeTop}>
+             <Text style={styles.tradeSymbol}>{trade.symbol}</Text>
+             <Text style={styles.tradeDate}>{new Date(trade.date).toLocaleDateString()}</Text>
+          </View>
+          
+          <View style={styles.tradeTagsWrap}>
+             <View style={[styles.tradeBadge, { borderColor: trade.bias === 'BULLISH' ? colors.positive : trade.bias === 'BEARISH' ? colors.negative : colors.border }]}>
+               <Text style={[styles.tradeBadgeText, { color: trade.bias === 'BULLISH' ? colors.positive : trade.bias === 'BEARISH' ? colors.negative : colors.text }]}>{trade.bias}</Text>
+             </View>
+             
+             {trade.setups?.slice(0, 2).map((s, i) => (
+               <View key={i} style={styles.tradeBadge}><Text style={styles.tradeBadgeText}>{s}</Text></View>
+             ))}
+             {trade.setups?.length > 2 && <Text style={styles.tradeMoreTags}>+{trade.setups.length - 2}</Text>}
+          </View>
+
+          <View style={styles.tradeBottom}>
+             <View style={[styles.resultBadge, trade.winLoss === 'WIN' ? { backgroundColor: colors.positiveDim } : trade.winLoss === 'LOSS' ? { backgroundColor: 'rgba(255,69,58,0.15)' } : {}]}>
+               <Text style={[styles.resultBadgeText, trade.winLoss === 'WIN' ? { color: colors.positive } : trade.winLoss === 'LOSS' ? { color: colors.negative } : {}]}>
+                 {trade.winLoss || 'PENDING'}
+               </Text>
+             </View>
+             
+             <Text style={[styles.tradePnL, Number(trade.profitLoss) >= 0 ? { color: colors.positive } : { color: colors.negative }]}>
+                {Number(trade.profitLoss) >= 0 ? '+' : ''}${Math.abs(Number(trade.profitLoss)).toFixed(2)}
+             </Text>
+          </View>
+        </Card>
+      )}
+    />
   );
 }
 
@@ -30,8 +81,8 @@ function PerformanceTab() {
     <View style={{ flex: 1, justifyContent: 'center' }}>
       <EmptyState
         icon="trending-up-outline"
-        title="No performance data"
-        subtitle="Log trades to unlock charts and performance insights."
+        title="Performance Analysis"
+        subtitle="Chart visualizations coming soon!"
       />
     </View>
   );
@@ -57,31 +108,6 @@ function ImportTab() {
           <Text style={styles.importButtonText}>Choose File</Text>
         </TouchableOpacity>
       </Card>
-
-      <View style={styles.dividerRow}>
-        <View style={styles.divider} />
-        <Text style={styles.dividerText}>MT4 / MT5 INTEGRATION</Text>
-        <View style={styles.divider} />
-      </View>
-
-      <Card style={styles.importCard}>
-        <View style={styles.importHeader}>
-          <View style={[styles.importIconWrap, { backgroundColor: 'rgba(10,132,255,0.15)' }]}>
-            <Ionicons name="sync-outline" size={24} color={colors.blue} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.importTitle}>Broker Sync</Text>
-            <Text style={styles.importSub}>Connect MT4/MT5 to auto-sync trades</Text>
-          </View>
-        </View>
-        <View style={styles.emptyBrokerBox}>
-          <Text style={styles.emptyBrokerText}>No broker accounts connected</Text>
-        </View>
-        <TouchableOpacity style={[styles.importButton, { backgroundColor: colors.blue }]}>
-          <Ionicons name="add" size={18} color="#fff" />
-          <Text style={styles.importButtonText}>Connect Broker</Text>
-        </TouchableOpacity>
-      </Card>
     </ScrollView>
   );
 }
@@ -94,7 +120,7 @@ export default function TradesScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.pageTitle} numberOfLines={1} adjustsFontSizeToFit>Trade Journal</Text>
+        <Text style={styles.pageTitle} numberOfLines={1} adjustsFontSizeToFit>Journal</Text>
         <TouchableOpacity 
           style={styles.addTradeBtn}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -117,63 +143,45 @@ export default function TradesScreen({ navigation }) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.xxl,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.xxl,
   },
   pageTitle: { ...typography.largeTitle },
   addTradeBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: radius.pill,
-    gap: 4,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.primary,
+    paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.pill, gap: 4,
   },
-  addTradeBtnText: {
-    ...typography.subheadline,
-    color: colors.primaryForeground,
-    fontWeight: '700',
-  },
-  segWrap: {
-    paddingHorizontal: spacing.lg,
-    marginBottom: spacing.lg,
-  },
-  tabContent: {
-    flex: 1,
-    paddingHorizontal: spacing.lg,
-  },
+  addTradeBtnText: { ...typography.subheadline, color: colors.primaryForeground, fontWeight: '700' },
+  segWrap: { paddingHorizontal: spacing.lg, marginBottom: spacing.lg },
+  tabContent: { flex: 1, paddingHorizontal: spacing.lg },
+
+  // Trade Cards
+  tradeCard: { padding: spacing.md, marginBottom: spacing.md },
+  tradeTop: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.sm },
+  tradeSymbol: { ...typography.headline, fontSize: 18 },
+  tradeDate: { ...typography.footnote, color: colors.textTertiary },
+  
+  tradeTagsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: spacing.md },
+  tradeBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface2 },
+  tradeBadgeText: { ...typography.caption, color: colors.textSecondary, fontWeight: '600' },
+  tradeMoreTags: { ...typography.caption, color: colors.textTertiary, alignSelf: 'center' },
+
+  tradeBottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  resultBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill, backgroundColor: colors.surface2 },
+  resultBadgeText: { ...typography.footnote, fontWeight: '700', color: colors.textSecondary },
+  tradePnL: { ...typography.title3 },
 
   // Import
   importCard: { padding: spacing.xl, gap: spacing.md },
-  // Fix: use colors.positiveDim for import icon bg
   importHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  importIconWrap: {
-    width: 44, height: 44, borderRadius: 12,
-    backgroundColor: colors.positiveDim, alignItems: 'center', justifyContent: 'center',
-  },
+  importIconWrap: { width: 44, height: 44, borderRadius: 12, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' },
   importTitle: { ...typography.headline },
-  importSub: { ...typography.footnote, marginTop: 2 },
+  importSub: { ...typography.footnote, marginTop: 2, color: colors.textSecondary },
   importHint: { ...typography.footnote, color: colors.textTertiary },
   importButton: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: spacing.sm, backgroundColor: colors.surface2, borderRadius: radius.md,
     paddingVertical: 13, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.borderStrong,
   },
-  importButtonText: { ...typography.callout, fontWeight: '600' },
-  emptyBrokerBox: {
-    borderWidth: StyleSheet.hairlineWidth, borderColor: colors.borderStrong,
-    borderRadius: radius.md, borderStyle: 'dashed', paddingVertical: spacing.xl,
-    alignItems: 'center',
-  },
-  emptyBrokerText: { ...typography.subheadline },
-
-  // Divider
-  dividerRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  divider: { flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: colors.borderStrong },
-  dividerText: { ...typography.caption, color: colors.textTertiary, letterSpacing: 0.5 },
+  importButtonText: { ...typography.callout, fontWeight: '600', color: colors.text },
 });

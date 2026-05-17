@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button"
 import { NewsWidget } from "../../components/NewsWidget"
 import { BarChart2, PieChart, TrendingUp, DollarSign } from "lucide-react"
 import RecentTrades from "../../components/RecentTrades"
+import InsightCards from "../../components/InsightCards"
 import { getTrades } from "../../lib/trades"
 
 export default function Dashboard() {
+  const [trades, setTrades] = useState<any[]>([])
   const [stats, setStats] = useState({
     totalTrades: 0,
     winRate: 0,
@@ -17,14 +19,15 @@ export default function Dashboard() {
   })
 
   useEffect(() => {
-    getTrades().then((trades: any[]) => {
-      const totalTrades = trades.length
+    getTrades().then((fetchedTrades: any[]) => {
+      setTrades(fetchedTrades)
+      const totalTrades = fetchedTrades.length
       let wins = 0
       let grossProfit = 0
       let grossLoss = 0
       let totalProfit = 0
 
-      trades.forEach((trade) => {
+      fetchedTrades.forEach((trade) => {
         const pl = Number(trade.profitLoss ?? 0)
         totalProfit += pl
         if (pl > 0) {
@@ -96,13 +99,17 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* AI Insights */}
+      <InsightCards compact />
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="col-span-1 lg:col-span-2">
           <CardHeader>
             <CardTitle>Recent Trades</CardTitle>
           </CardHeader>
           <CardContent>
-            <RecentTrades />
+            <RecentTrades initialTrades={trades} />
           </CardContent>
         </Card>
         

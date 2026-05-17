@@ -23,9 +23,13 @@ model User {
   preferredMarkets String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isVerified Boolean @default(false)
+  otp        String?
+  otpExpiresAt DateTime?
 
   trades      Trade[]
   strategies  Strategy[]
+  aiInsights  AIInsight[]
 }
 
 enum TradeBias {
@@ -75,6 +79,34 @@ model TradeReview {
 
   trade      Trade    @relation(fields: [tradeId], references: [id], onDelete: Cascade)
 }
+
+enum InsightType {
+  PERFORMANCE
+  EMOTIONAL
+  STRATEGY
+  RISK
+  MARKET
+}
+
+enum InsightSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+model AIInsight {
+  id             String          @id @default(cuid())
+  userId         String
+  type           InsightType
+  severity       InsightSeverity @default(INFO)
+  title          String
+  finding        String
+  recommendation String
+  createdAt      DateTime        @default(now())
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model Strategy {
   id              String   @id @default(cuid())
   userId          String

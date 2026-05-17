@@ -7,8 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Suspense } from "react";
-import { ListChecks, LineChart, PlusCircle, Server } from "lucide-react";
-import { BrokerConnections } from "../../../components/BrokerConnections";
+import { ListChecks, LineChart, PlusCircle } from "lucide-react";
 import { CsvImport } from "../../../components/CsvImport";
 
 /**
@@ -28,7 +27,7 @@ export default function TradesPage() {
       <Tabs defaultValue="brokerSync" className="w-full">
         <TabsList className="grid w-full grid-cols-1 sm:grid-cols-4 gap-2 mb-6">
           <TabsTrigger value="brokerSync">
-            <Server className="mr-2 h-4 w-4" /> Import & Sync
+            <PlusCircle className="mr-2 h-4 w-4" /> Import CSV
           </TabsTrigger>
           <TabsTrigger value="logTrade">
             <PlusCircle className="mr-2 h-4 w-4" /> Manual Log
@@ -43,17 +42,6 @@ export default function TradesPage() {
 
         <TabsContent value="brokerSync" className="space-y-6">
           <CsvImport />
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground text-[10px] tracking-wider font-semibold">MT4/MT5 Integration</span>
-            </div>
-          </div>
-          <div>
-            <BrokerConnections />
-          </div>
         </TabsContent>
 
         <TabsContent value="logTrade">

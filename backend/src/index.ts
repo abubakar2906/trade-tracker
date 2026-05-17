@@ -11,6 +11,7 @@ import strategyRoutes from './routes/strategies.js'
 import profileRoutes from './routes/profile.js'
 import importRoutes from './routes/import.js'
 import newsRoutes from './routes/news.js'
+import aiRoutes from './routes/ai.js'
 
 dotenv.config()
 
@@ -37,12 +38,23 @@ const authLimiter = rateLimit({
   message: { error: 'Too many requests, please try again later.' },
 })
 
+// General API rate limit: 100 req/min per IP
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+})
+
 app.use('/api/auth', authLimiter, authRoutes)
+app.use('/api', apiLimiter)
 app.use('/api/trades', tradeRoutes)
 app.use('/api/import', importRoutes)
 app.use('/api/strategies', strategyRoutes)
 app.use('/api/profile', profileRoutes)
 app.use('/api/news', newsRoutes)
+app.use('/api/ai', aiRoutes)
 
 app.get('/health', (_, res) => res.json({ status: 'ok' }))
 

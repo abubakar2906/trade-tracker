@@ -53,10 +53,7 @@ export default function LoginPage() {
               <Input id="email" type="email" placeholder="m@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
             </div>
             <div className="grid gap-2">
-              <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
-                <Link href="#" className="ml-auto inline-block text-sm underline">Forgot your password?</Link>
-              </div>
               <div className="relative">
                 <Input id="password" type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required className="pr-10" />
                 <button

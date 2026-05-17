@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   Trade: 'Trade',
   TradeReview: 'TradeReview',
+  AIInsight: 'AIInsight',
   Strategy: 'Strategy',
   JournalEntry: 'JournalEntry'
 } as const
@@ -85,7 +86,10 @@ export const UserScalarFieldEnum = {
   tradingStyle: 'tradingStyle',
   preferredMarkets: 'preferredMarkets',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isVerified: 'isVerified',
+  otp: 'otp',
+  otpExpiresAt: 'otpExpiresAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -122,6 +126,20 @@ export const TradeReviewScalarFieldEnum = {
 } as const
 
 export type TradeReviewScalarFieldEnum = (typeof TradeReviewScalarFieldEnum)[keyof typeof TradeReviewScalarFieldEnum]
+
+
+export const AIInsightScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  severity: 'severity',
+  title: 'title',
+  finding: 'finding',
+  recommendation: 'recommendation',
+  createdAt: 'createdAt'
+} as const
+
+export type AIInsightScalarFieldEnum = (typeof AIInsightScalarFieldEnum)[keyof typeof AIInsightScalarFieldEnum]
 
 
 export const StrategyScalarFieldEnum = {

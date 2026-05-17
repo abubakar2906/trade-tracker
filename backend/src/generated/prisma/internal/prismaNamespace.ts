@@ -387,6 +387,7 @@ export const ModelName = {
   User: 'User',
   Trade: 'Trade',
   TradeReview: 'TradeReview',
+  AIInsight: 'AIInsight',
   Strategy: 'Strategy',
   JournalEntry: 'JournalEntry'
 } as const
@@ -404,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "trade" | "tradeReview" | "strategy" | "journalEntry"
+    modelProps: "user" | "trade" | "tradeReview" | "aIInsight" | "strategy" | "journalEntry"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -630,6 +631,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AIInsight: {
+      payload: Prisma.$AIInsightPayload<ExtArgs>
+      fields: Prisma.AIInsightFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AIInsightFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AIInsightFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload>
+        }
+        findFirst: {
+          args: Prisma.AIInsightFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AIInsightFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload>
+        }
+        findMany: {
+          args: Prisma.AIInsightFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload>[]
+        }
+        create: {
+          args: Prisma.AIInsightCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload>
+        }
+        createMany: {
+          args: Prisma.AIInsightCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AIInsightCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload>[]
+        }
+        delete: {
+          args: Prisma.AIInsightDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload>
+        }
+        update: {
+          args: Prisma.AIInsightUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload>
+        }
+        deleteMany: {
+          args: Prisma.AIInsightDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AIInsightUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AIInsightUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload>[]
+        }
+        upsert: {
+          args: Prisma.AIInsightUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AIInsightPayload>
+        }
+        aggregate: {
+          args: Prisma.AIInsightAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAIInsight>
+        }
+        groupBy: {
+          args: Prisma.AIInsightGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AIInsightGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AIInsightCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AIInsightCountAggregateOutputType> | number
+        }
+      }
+    }
     Strategy: {
       payload: Prisma.$StrategyPayload<ExtArgs>
       fields: Prisma.StrategyFieldRefs
@@ -828,7 +903,10 @@ export const UserScalarFieldEnum = {
   tradingStyle: 'tradingStyle',
   preferredMarkets: 'preferredMarkets',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isVerified: 'isVerified',
+  otp: 'otp',
+  otpExpiresAt: 'otpExpiresAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -865,6 +943,20 @@ export const TradeReviewScalarFieldEnum = {
 } as const
 
 export type TradeReviewScalarFieldEnum = (typeof TradeReviewScalarFieldEnum)[keyof typeof TradeReviewScalarFieldEnum]
+
+
+export const AIInsightScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  severity: 'severity',
+  title: 'title',
+  finding: 'finding',
+  recommendation: 'recommendation',
+  createdAt: 'createdAt'
+} as const
+
+export type AIInsightScalarFieldEnum = (typeof AIInsightScalarFieldEnum)[keyof typeof AIInsightScalarFieldEnum]
 
 
 export const StrategyScalarFieldEnum = {
@@ -960,6 +1052,13 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'TradeBias'
  */
 export type EnumTradeBiasFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TradeBias'>
@@ -998,6 +1097,34 @@ export type EnumTradeResultFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'TradeResult[]'
  */
 export type ListEnumTradeResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TradeResult[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InsightType'
+ */
+export type EnumInsightTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InsightType'>
+    
+
+
+/**
+ * Reference to a field of type 'InsightType[]'
+ */
+export type ListEnumInsightTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InsightType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InsightSeverity'
+ */
+export type EnumInsightSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InsightSeverity'>
+    
+
+
+/**
+ * Reference to a field of type 'InsightSeverity[]'
+ */
+export type ListEnumInsightSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InsightSeverity[]'>
     
 
 
@@ -1112,6 +1239,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   trade?: Prisma.TradeOmit
   tradeReview?: Prisma.TradeReviewOmit
+  aIInsight?: Prisma.AIInsightOmit
   strategy?: Prisma.StrategyOmit
   journalEntry?: Prisma.JournalEntryOmit
 }

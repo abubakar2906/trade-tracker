@@ -2,7 +2,9 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Home, BarChart2, PieChart, Settings, Menu, TrendingUp, FileText, NotebookPen, User, ChevronLeft, ChevronRight } from "lucide-react"
+import { Home, BarChart2, Settings, Menu, TrendingUp, FileText, NotebookPen, User, ChevronLeft, ChevronRight, Brain, LogOut } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { clearToken } from "@/app/lib/api"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
@@ -10,6 +12,7 @@ const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: Home },
   { name: "Trades", href: "/dashboard/trades", icon: BarChart2 },
   { name: "Strategies", href: "/dashboard/strategies", icon: NotebookPen },
+  { name: "AI Coach", href: "/dashboard/ai", icon: Brain },
   { name: "Report", href: "/report", icon: FileText },
   { name: "Profile", href: "/profile", icon: User },
 ]
@@ -17,6 +20,12 @@ const navItems = [
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const router = useRouter()
+
+  const handleSignOut = () => {
+    clearToken()
+    router.push("/login")
+  }
 
   // Avoid creating inner components to prevent DOM unmounting on state change
   const renderContent = (isMobile: boolean) => (
@@ -68,6 +77,21 @@ export default function Sidebar() {
           ))}
         </ul>
       </nav>
+      <div className="p-4 mt-auto border-t border-border">
+        <Button 
+          variant="ghost" 
+          className={`w-full text-red-500 hover:text-red-600 hover:bg-red-500/10 ${isCollapsed && !isMobile ? "justify-center px-0 flex" : "justify-start"}`} 
+          onClick={() => {
+            handleSignOut()
+            setOpen(false)
+          }}
+        >
+          <LogOut className={`${isCollapsed && !isMobile ? "mr-0" : "mr-3"} h-5 w-5 flex-shrink-0 transition-all`} />
+          <span className={`${isCollapsed && !isMobile ? "hidden" : "block"} whitespace-nowrap`}>
+            Sign Out
+          </span>
+        </Button>
+      </div>
     </div>
   )
 

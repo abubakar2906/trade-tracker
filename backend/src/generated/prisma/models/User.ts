@@ -36,6 +36,9 @@ export type UserMinAggregateOutputType = {
   preferredMarkets: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  isVerified: boolean | null
+  otp: string | null
+  otpExpiresAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -50,6 +53,9 @@ export type UserMaxAggregateOutputType = {
   preferredMarkets: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  isVerified: boolean | null
+  otp: string | null
+  otpExpiresAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -64,6 +70,9 @@ export type UserCountAggregateOutputType = {
   preferredMarkets: number
   createdAt: number
   updatedAt: number
+  isVerified: number
+  otp: number
+  otpExpiresAt: number
   _all: number
 }
 
@@ -80,6 +89,9 @@ export type UserMinAggregateInputType = {
   preferredMarkets?: true
   createdAt?: true
   updatedAt?: true
+  isVerified?: true
+  otp?: true
+  otpExpiresAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -94,6 +106,9 @@ export type UserMaxAggregateInputType = {
   preferredMarkets?: true
   createdAt?: true
   updatedAt?: true
+  isVerified?: true
+  otp?: true
+  otpExpiresAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -108,6 +123,9 @@ export type UserCountAggregateInputType = {
   preferredMarkets?: true
   createdAt?: true
   updatedAt?: true
+  isVerified?: true
+  otp?: true
+  otpExpiresAt?: true
   _all?: true
 }
 
@@ -195,6 +213,9 @@ export type UserGroupByOutputType = {
   preferredMarkets: string | null
   createdAt: Date
   updatedAt: Date
+  isVerified: boolean
+  otp: string | null
+  otpExpiresAt: Date | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -230,8 +251,12 @@ export type UserWhereInput = {
   preferredMarkets?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  isVerified?: Prisma.BoolFilter<"User"> | boolean
+  otp?: Prisma.StringNullableFilter<"User"> | string | null
+  otpExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   trades?: Prisma.TradeListRelationFilter
   strategies?: Prisma.StrategyListRelationFilter
+  aiInsights?: Prisma.AIInsightListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -246,8 +271,12 @@ export type UserOrderByWithRelationInput = {
   preferredMarkets?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
+  otp?: Prisma.SortOrderInput | Prisma.SortOrder
+  otpExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   trades?: Prisma.TradeOrderByRelationAggregateInput
   strategies?: Prisma.StrategyOrderByRelationAggregateInput
+  aiInsights?: Prisma.AIInsightOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -265,8 +294,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   preferredMarkets?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  isVerified?: Prisma.BoolFilter<"User"> | boolean
+  otp?: Prisma.StringNullableFilter<"User"> | string | null
+  otpExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   trades?: Prisma.TradeListRelationFilter
   strategies?: Prisma.StrategyListRelationFilter
+  aiInsights?: Prisma.AIInsightListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -281,6 +314,9 @@ export type UserOrderByWithAggregationInput = {
   preferredMarkets?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
+  otp?: Prisma.SortOrderInput | Prisma.SortOrder
+  otpExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -301,6 +337,9 @@ export type UserScalarWhereWithAggregatesInput = {
   preferredMarkets?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  isVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  otp?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  otpExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
@@ -315,8 +354,12 @@ export type UserCreateInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  isVerified?: boolean
+  otp?: string | null
+  otpExpiresAt?: Date | string | null
   trades?: Prisma.TradeCreateNestedManyWithoutUserInput
   strategies?: Prisma.StrategyCreateNestedManyWithoutUserInput
+  aiInsights?: Prisma.AIInsightCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -331,8 +374,12 @@ export type UserUncheckedCreateInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  isVerified?: boolean
+  otp?: string | null
+  otpExpiresAt?: Date | string | null
   trades?: Prisma.TradeUncheckedCreateNestedManyWithoutUserInput
   strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutUserInput
+  aiInsights?: Prisma.AIInsightUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -347,8 +394,12 @@ export type UserUpdateInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trades?: Prisma.TradeUpdateManyWithoutUserNestedInput
   strategies?: Prisma.StrategyUpdateManyWithoutUserNestedInput
+  aiInsights?: Prisma.AIInsightUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -363,8 +414,12 @@ export type UserUncheckedUpdateInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trades?: Prisma.TradeUncheckedUpdateManyWithoutUserNestedInput
   strategies?: Prisma.StrategyUncheckedUpdateManyWithoutUserNestedInput
+  aiInsights?: Prisma.AIInsightUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -379,6 +434,9 @@ export type UserCreateManyInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  isVerified?: boolean
+  otp?: string | null
+  otpExpiresAt?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -393,6 +451,9 @@ export type UserUpdateManyMutationInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -407,6 +468,9 @@ export type UserUncheckedUpdateManyInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -421,6 +485,9 @@ export type UserCountOrderByAggregateInput = {
   preferredMarkets?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
+  otp?: Prisma.SortOrder
+  otpExpiresAt?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -435,6 +502,9 @@ export type UserMaxOrderByAggregateInput = {
   preferredMarkets?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
+  otp?: Prisma.SortOrder
+  otpExpiresAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -449,6 +519,9 @@ export type UserMinOrderByAggregateInput = {
   preferredMarkets?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  isVerified?: Prisma.SortOrder
+  otp?: Prisma.SortOrder
+  otpExpiresAt?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -468,6 +541,14 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type UserCreateNestedOneWithoutTradesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutTradesInput, Prisma.UserUncheckedCreateWithoutTradesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutTradesInput
@@ -480,6 +561,20 @@ export type UserUpdateOneRequiredWithoutTradesNestedInput = {
   upsert?: Prisma.UserUpsertWithoutTradesInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTradesInput, Prisma.UserUpdateWithoutTradesInput>, Prisma.UserUncheckedUpdateWithoutTradesInput>
+}
+
+export type UserCreateNestedOneWithoutAiInsightsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiInsightsInput, Prisma.UserUncheckedCreateWithoutAiInsightsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiInsightsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAiInsightsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiInsightsInput, Prisma.UserUncheckedCreateWithoutAiInsightsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiInsightsInput
+  upsert?: Prisma.UserUpsertWithoutAiInsightsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAiInsightsInput, Prisma.UserUpdateWithoutAiInsightsInput>, Prisma.UserUncheckedUpdateWithoutAiInsightsInput>
 }
 
 export type UserCreateNestedOneWithoutStrategiesInput = {
@@ -508,7 +603,11 @@ export type UserCreateWithoutTradesInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  isVerified?: boolean
+  otp?: string | null
+  otpExpiresAt?: Date | string | null
   strategies?: Prisma.StrategyCreateNestedManyWithoutUserInput
+  aiInsights?: Prisma.AIInsightCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTradesInput = {
@@ -523,7 +622,11 @@ export type UserUncheckedCreateWithoutTradesInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  isVerified?: boolean
+  otp?: string | null
+  otpExpiresAt?: Date | string | null
   strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutUserInput
+  aiInsights?: Prisma.AIInsightUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTradesInput = {
@@ -554,7 +657,11 @@ export type UserUpdateWithoutTradesInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   strategies?: Prisma.StrategyUpdateManyWithoutUserNestedInput
+  aiInsights?: Prisma.AIInsightUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTradesInput = {
@@ -569,6 +676,102 @@ export type UserUncheckedUpdateWithoutTradesInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  strategies?: Prisma.StrategyUncheckedUpdateManyWithoutUserNestedInput
+  aiInsights?: Prisma.AIInsightUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAiInsightsInput = {
+  id?: string
+  email: string
+  password: string
+  fullName?: string | null
+  phone?: string | null
+  location?: string | null
+  bio?: string | null
+  tradingStyle?: string | null
+  preferredMarkets?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  isVerified?: boolean
+  otp?: string | null
+  otpExpiresAt?: Date | string | null
+  trades?: Prisma.TradeCreateNestedManyWithoutUserInput
+  strategies?: Prisma.StrategyCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAiInsightsInput = {
+  id?: string
+  email: string
+  password: string
+  fullName?: string | null
+  phone?: string | null
+  location?: string | null
+  bio?: string | null
+  tradingStyle?: string | null
+  preferredMarkets?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  isVerified?: boolean
+  otp?: string | null
+  otpExpiresAt?: Date | string | null
+  trades?: Prisma.TradeUncheckedCreateNestedManyWithoutUserInput
+  strategies?: Prisma.StrategyUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAiInsightsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiInsightsInput, Prisma.UserUncheckedCreateWithoutAiInsightsInput>
+}
+
+export type UserUpsertWithoutAiInsightsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAiInsightsInput, Prisma.UserUncheckedUpdateWithoutAiInsightsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiInsightsInput, Prisma.UserUncheckedCreateWithoutAiInsightsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAiInsightsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAiInsightsInput, Prisma.UserUncheckedUpdateWithoutAiInsightsInput>
+}
+
+export type UserUpdateWithoutAiInsightsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradingStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trades?: Prisma.TradeUpdateManyWithoutUserNestedInput
+  strategies?: Prisma.StrategyUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAiInsightsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tradingStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trades?: Prisma.TradeUncheckedUpdateManyWithoutUserNestedInput
   strategies?: Prisma.StrategyUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -584,7 +787,11 @@ export type UserCreateWithoutStrategiesInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  isVerified?: boolean
+  otp?: string | null
+  otpExpiresAt?: Date | string | null
   trades?: Prisma.TradeCreateNestedManyWithoutUserInput
+  aiInsights?: Prisma.AIInsightCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStrategiesInput = {
@@ -599,7 +806,11 @@ export type UserUncheckedCreateWithoutStrategiesInput = {
   preferredMarkets?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  isVerified?: boolean
+  otp?: string | null
+  otpExpiresAt?: Date | string | null
   trades?: Prisma.TradeUncheckedCreateNestedManyWithoutUserInput
+  aiInsights?: Prisma.AIInsightUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStrategiesInput = {
@@ -630,7 +841,11 @@ export type UserUpdateWithoutStrategiesInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trades?: Prisma.TradeUpdateManyWithoutUserNestedInput
+  aiInsights?: Prisma.AIInsightUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStrategiesInput = {
@@ -645,7 +860,11 @@ export type UserUncheckedUpdateWithoutStrategiesInput = {
   preferredMarkets?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  otp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otpExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   trades?: Prisma.TradeUncheckedUpdateManyWithoutUserNestedInput
+  aiInsights?: Prisma.AIInsightUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -656,11 +875,13 @@ export type UserUncheckedUpdateWithoutStrategiesInput = {
 export type UserCountOutputType = {
   trades: number
   strategies: number
+  aiInsights: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   trades?: boolean | UserCountOutputTypeCountTradesArgs
   strategies?: boolean | UserCountOutputTypeCountStrategiesArgs
+  aiInsights?: boolean | UserCountOutputTypeCountAiInsightsArgs
 }
 
 /**
@@ -687,6 +908,13 @@ export type UserCountOutputTypeCountStrategiesArgs<ExtArgs extends runtime.Types
   where?: Prisma.StrategyWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAiInsightsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AIInsightWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -700,8 +928,12 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   preferredMarkets?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  isVerified?: boolean
+  otp?: boolean
+  otpExpiresAt?: boolean
   trades?: boolean | Prisma.User$tradesArgs<ExtArgs>
   strategies?: boolean | Prisma.User$strategiesArgs<ExtArgs>
+  aiInsights?: boolean | Prisma.User$aiInsightsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -717,6 +949,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   preferredMarkets?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  isVerified?: boolean
+  otp?: boolean
+  otpExpiresAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -731,6 +966,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   preferredMarkets?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  isVerified?: boolean
+  otp?: boolean
+  otpExpiresAt?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -745,12 +983,16 @@ export type UserSelectScalar = {
   preferredMarkets?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  isVerified?: boolean
+  otp?: boolean
+  otpExpiresAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "fullName" | "phone" | "location" | "bio" | "tradingStyle" | "preferredMarkets" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "fullName" | "phone" | "location" | "bio" | "tradingStyle" | "preferredMarkets" | "createdAt" | "updatedAt" | "isVerified" | "otp" | "otpExpiresAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   trades?: boolean | Prisma.User$tradesArgs<ExtArgs>
   strategies?: boolean | Prisma.User$strategiesArgs<ExtArgs>
+  aiInsights?: boolean | Prisma.User$aiInsightsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -761,6 +1003,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     trades: Prisma.$TradePayload<ExtArgs>[]
     strategies: Prisma.$StrategyPayload<ExtArgs>[]
+    aiInsights: Prisma.$AIInsightPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -774,6 +1017,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     preferredMarkets: string | null
     createdAt: Date
     updatedAt: Date
+    isVerified: boolean
+    otp: string | null
+    otpExpiresAt: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1170,6 +1416,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   trades<T extends Prisma.User$tradesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tradesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TradePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   strategies<T extends Prisma.User$strategiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$strategiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StrategyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  aiInsights<T extends Prisma.User$aiInsightsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$aiInsightsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AIInsightPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1210,6 +1457,9 @@ export interface UserFieldRefs {
   readonly preferredMarkets: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly isVerified: Prisma.FieldRef<"User", 'Boolean'>
+  readonly otp: Prisma.FieldRef<"User", 'String'>
+  readonly otpExpiresAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 
@@ -1648,6 +1898,30 @@ export type User$strategiesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.StrategyScalarFieldEnum | Prisma.StrategyScalarFieldEnum[]
+}
+
+/**
+ * User.aiInsights
+ */
+export type User$aiInsightsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AIInsight
+   */
+  select?: Prisma.AIInsightSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AIInsight
+   */
+  omit?: Prisma.AIInsightOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AIInsightInclude<ExtArgs> | null
+  where?: Prisma.AIInsightWhereInput
+  orderBy?: Prisma.AIInsightOrderByWithRelationInput | Prisma.AIInsightOrderByWithRelationInput[]
+  cursor?: Prisma.AIInsightWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AIInsightScalarFieldEnum | Prisma.AIInsightScalarFieldEnum[]
 }
 
 /**

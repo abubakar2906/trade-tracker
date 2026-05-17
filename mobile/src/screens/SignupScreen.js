@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radius, typography } from '../theme';
 import { signup } from '../lib/api';
-import { useAuth } from '../navigation/RootNavigator';
+import { useAuth } from '../context/AuthContext';
 
 export default function SignupScreen({ navigation }) {
   const [fullName, setFullName] = useState('');

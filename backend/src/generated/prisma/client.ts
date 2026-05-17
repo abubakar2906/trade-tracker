@@ -57,6 +57,11 @@ export type Trade = Prisma.TradeModel
  */
 export type TradeReview = Prisma.TradeReviewModel
 /**
+ * Model AIInsight
+ * 
+ */
+export type AIInsight = Prisma.AIInsightModel
+/**
  * Model Strategy
  * 
  */

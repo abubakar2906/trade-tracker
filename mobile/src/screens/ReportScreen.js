@@ -1,41 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radius, typography } from '../theme';
-import { Card, EmptyState } from '../components/shared';
-
-const TIME_FILTERS = ['All Time', '1W', '1M', '3M', '1Y'];
-const TYPE_FILTERS = ['All Types', 'Forex', 'Crypto', 'Stocks'];
-
-const STATS = [
-  { label: 'Total Profit',       value: '$0.00', sub: null,           icon: 'cash-outline',          color: colors.positive },
-  { label: 'Win Rate',           value: '0.00%', sub: null,           icon: 'pie-chart-outline',     color: colors.blue },
-  { label: 'Max Drawdown',       value: '$0.00', sub: null,           icon: 'trending-down-outline', color: colors.negative },
-  { label: 'Profit Factor',      value: '0.00',  sub: null,           icon: 'trending-up-outline',   color: colors.text },
-  { label: 'Total Trades',       value: '0',     sub: null,           icon: 'receipt-outline',       color: colors.text },
-  { label: 'Average Profit',     value: '$0.00', sub: null,           icon: 'stats-chart-outline',   color: colors.text },
-  { label: 'Longest Win Streak', value: '0',     sub: null,           icon: 'flame-outline',         color: colors.orange },
-  { label: 'Longest Lose Streak',value: '0',     sub: null,           icon: 'thunderstorm-outline',  color: colors.negative },
-];
-
-function FilterPill({ options, selected, onChange }) {
-  return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <View style={styles.pillRow}>
-        {options.map((opt, i) => (
-          <TouchableOpacity
-            key={i}
-            style={[styles.pill, selected === i && styles.pillActive]}
-            onPress={() => onChange(i)}
-          >
-            <Text style={[styles.pillText, selected === i && styles.pillTextActive]}>{opt}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
-  );
-}
+import { Card } from '../components/shared';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '../lib/api';
 
 function MiniStatCard({ label, value, icon, color }) {
   return (
@@ -51,41 +21,42 @@ function MiniStatCard({ label, value, icon, color }) {
   );
 }
 
-function ChartPlaceholder({ title, subtitle }) {
-  return (
-    <Card style={styles.chartCard}>
-      <Text style={styles.chartTitle}>{title}</Text>
-      {subtitle ? <Text style={styles.chartSub}>{subtitle}</Text> : null}
-      <View style={styles.chartEmpty}>
-        <Ionicons name="bar-chart-outline" size={36} color={colors.textTertiary} />
-        <Text style={styles.chartEmptyText}>No data yet</Text>
-      </View>
-    </Card>
-  );
-}
-
 export default function ReportScreen() {
-  const [timeFilter, setTimeFilter] = useState(0);
-  const [typeFilter, setTypeFilter] = useState(0);
+  const { data: trades = [], isLoading } = useQuery({ queryKey: ['trades'], queryFn: () => apiFetch('/api/trades') });
+
+  const totalTrades = trades.length;
+  const winningTrades = trades.filter(t => t.winLoss === 'WIN' || t.profitLoss > 0).length;
+  const losingTrades = trades.filter(t => t.winLoss === 'LOSS' || t.profitLoss < 0).length;
+  const winRate = totalTrades > 0 ? ((winningTrades / totalTrades) * 100).toFixed(1) : '0.0';
+  
+  const grossProfit = trades.filter(t => (Number(t.profitLoss) > 0)).reduce((sum, t) => sum + Number(t.profitLoss), 0);
+  const grossLoss = trades.filter(t => (Number(t.profitLoss) < 0)).reduce((sum, t) => sum + Math.abs(Number(t.profitLoss)), 0);
+  
+  const totalProfit = grossProfit - grossLoss;
+  const profitFactor = grossLoss > 0 ? (grossProfit / grossLoss).toFixed(2) : (grossProfit > 0 ? '∞' : '0.00');
+  
+  const avgWin = winningTrades > 0 ? (grossProfit / winningTrades).toFixed(2) : '0.00';
+  const avgLoss = losingTrades > 0 ? (grossLoss / losingTrades).toFixed(2) : '0.00';
+
+  const STATS = [
+    { label: 'Total P&L',       value: `$${Math.abs(totalProfit).toFixed(2)}`, icon: 'cash-outline',          color: totalProfit >= 0 ? colors.positive : colors.negative },
+    { label: 'Win Rate',           value: `${winRate}%`, icon: 'pie-chart-outline',     color: colors.blue },
+    { label: 'Profit Factor',      value: profitFactor, icon: 'trending-up-outline',   color: colors.text },
+    { label: 'Total Trades',       value: totalTrades.toString(), icon: 'receipt-outline',       color: colors.text },
+    { label: 'Average Win',     value: `$${avgWin}`, icon: 'arrow-up-outline',   color: colors.positive },
+    { label: 'Average Loss', value: `$${avgLoss}`, icon: 'arrow-down-outline',         color: colors.negative },
+  ];
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        {/* Header */}
+        
         <View style={styles.header}>
-          <Text style={styles.pageTitle}>Report</Text>
+          <Text style={styles.pageTitle}>Analytics</Text>
         </View>
 
-        {/* Filters */}
-        <View style={styles.filtersSection}>
-          <FilterPill options={TIME_FILTERS} selected={timeFilter} onChange={setTimeFilter} />
-          <FilterPill options={TYPE_FILTERS} selected={typeFilter} onChange={setTypeFilter} />
-        </View>
+        <Text style={styles.sectionLabel}>ALL TIME STATISTICS</Text>
 
-        {/* Trade Statistics label */}
-        <Text style={styles.sectionLabel}>TRADE STATISTICS</Text>
-
-        {/* 2×4 Stats Grid */}
         <View style={styles.statsGrid}>
           {STATS.map((s, i) => (
             <View key={i} style={styles.statsCell}>
@@ -94,11 +65,14 @@ export default function ReportScreen() {
           ))}
         </View>
 
-        {/* Charts */}
-        <Text style={styles.sectionLabel}>CHARTS</Text>
-        <ChartPlaceholder title="Profit by Symbol" subtitle="Total profit for each traded symbol" />
-        <ChartPlaceholder title="Trades by Day" subtitle="Number of trades executed each day" />
-        <ChartPlaceholder title="Win/Loss Ratio" subtitle="Visual breakdown of trade outcomes" />
+        <Card style={[styles.miniCard, { marginTop: spacing.md }]}>
+           <Text style={styles.chartTitle}>Equity Curve</Text>
+           <Text style={styles.chartSub}>Coming soon in next update</Text>
+           <View style={styles.chartEmpty}>
+             <Ionicons name="stats-chart-outline" size={36} color={colors.textTertiary} />
+             <Text style={styles.chartEmptyText}>Charts are being rebuilt for the new tag system.</Text>
+           </View>
+        </Card>
 
         <View style={{ height: 100 }} />
       </ScrollView>
@@ -111,38 +85,16 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: spacing.lg, gap: spacing.md },
   header: { paddingTop: spacing.lg, paddingBottom: spacing.sm },
   pageTitle: { ...typography.largeTitle },
-  filtersSection: { gap: spacing.sm },
-  pillRow: { flexDirection: 'row', gap: spacing.sm, paddingBottom: 2 },
-  pill: {
-    paddingHorizontal: 14, paddingVertical: 7, borderRadius: radius.pill,
-    backgroundColor: colors.surface, borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-  },
-  pillActive: { backgroundColor: colors.surface3, borderColor: colors.borderStrong },
-  pillText: { ...typography.footnote, color: colors.textSecondary, fontWeight: '500' },
-  pillTextActive: { color: colors.text, fontWeight: '600' },
-  sectionLabel: {
-    ...typography.caption, color: colors.textTertiary,
-    fontWeight: '600', letterSpacing: 0.8, marginLeft: 4, marginTop: spacing.sm,
-  },
+  sectionLabel: { ...typography.caption, color: colors.textTertiary, fontWeight: '600', letterSpacing: 0.8, marginLeft: 4, marginTop: spacing.sm },
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   statsCell: { width: '48.5%' },
   miniCard: { padding: spacing.md, gap: spacing.sm },
   miniCardHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  miniCardIcon: {
-    width: 28, height: 28, borderRadius: 8,
-    alignItems: 'center', justifyContent: 'center',
-  },
+  miniCardIcon: { width: 28, height: 28, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
   miniCardLabel: { ...typography.caption, color: colors.textSecondary, fontWeight: '500', flex: 1 },
   miniCardValue: { fontSize: 22, fontWeight: '700', letterSpacing: -0.3 },
-  chartCard: { padding: spacing.lg, gap: spacing.sm },
   chartTitle: { ...typography.title3, fontSize: 17 },
   chartSub: { ...typography.subheadline },
-  chartEmpty: {
-    height: 140, alignItems: 'center', justifyContent: 'center',
-    backgroundColor: colors.surface2, borderRadius: radius.md,
-    marginTop: spacing.sm, gap: spacing.sm, borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border, borderStyle: 'dashed',
-  },
-  chartEmptyText: { ...typography.footnote },
+  chartEmpty: { height: 140, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface2, borderRadius: radius.md, marginTop: spacing.sm, gap: spacing.sm, borderWidth: StyleSheet.hairlineWidth, borderColor: colors.border, borderStyle: 'dashed' },
+  chartEmptyText: { ...typography.footnote, textAlign: 'center', color: colors.textTertiary, paddingHorizontal: 20 },
 });

@@ -6,12 +6,20 @@ import { Badge } from "@/components/ui/badge"
 import { getTrades } from "../lib/trades"
 import type { Trade } from "../types/trade"
 
-export default function RecentTrades() {
-  const [trades, setTrades] = useState<Trade[]>([])
+interface RecentTradesProps {
+  initialTrades?: Trade[];
+}
+
+export default function RecentTrades({ initialTrades }: RecentTradesProps = {}) {
+  const [trades, setTrades] = useState<Trade[]>(initialTrades || [])
 
   useEffect(() => {
-    getTrades().then(setTrades).catch(console.error)
-  }, [])
+    if (initialTrades && initialTrades.length > 0) {
+      setTrades(initialTrades)
+    } else if (!initialTrades) {
+      getTrades().then(setTrades).catch(console.error)
+    }
+  }, [initialTrades])
 
   return (
     <Table>

@@ -11,9 +11,9 @@ export default function MainLayout({
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
       <NewsAlertsProvider />
-      <div className="flex flex-col lg:flex-row min-h-screen bg-background">
+      <div className="flex flex-col lg:flex-row h-screen bg-background overflow-hidden">
         <Sidebar />
-        <main className="flex-1 p-4 sm:p-6 md:p-8">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">{children}</main>
       </div>
     </ThemeProvider>
   )

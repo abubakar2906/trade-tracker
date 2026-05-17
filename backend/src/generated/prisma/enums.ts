@@ -25,3 +25,23 @@ export const TradeResult = {
 } as const
 
 export type TradeResult = (typeof TradeResult)[keyof typeof TradeResult]
+
+
+export const InsightType = {
+  PERFORMANCE: 'PERFORMANCE',
+  EMOTIONAL: 'EMOTIONAL',
+  STRATEGY: 'STRATEGY',
+  RISK: 'RISK',
+  MARKET: 'MARKET'
+} as const
+
+export type InsightType = (typeof InsightType)[keyof typeof InsightType]
+
+
+export const InsightSeverity = {
+  INFO: 'INFO',
+  WARNING: 'WARNING',
+  CRITICAL: 'CRITICAL'
+} as const
+
+export type InsightSeverity = (typeof InsightSeverity)[keyof typeof InsightSeverity]
