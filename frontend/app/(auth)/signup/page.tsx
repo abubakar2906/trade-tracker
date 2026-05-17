@@ -106,7 +106,7 @@ export default function SignupPage() {
                 <Label htmlFor="otp">Enter 6-digit OTP</Label>
                 <Input id="otp" placeholder="123456" value={otp} onChange={e => setOtp(e.target.value)} required maxLength={6} className="text-center tracking-widest text-lg" />
                 <p className="text-xs text-muted-foreground text-center mt-2">
-                  We've sent a code to {email}. Check your console for development.
+                  We've sent a code to {email}.
                 </p>
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
