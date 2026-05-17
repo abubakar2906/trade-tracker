@@ -1,6 +1,11 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import dns from 'dns'
+
+// Force IPv4 for all network requests (fixes Render/Cloudflare IPv6 routing hangs)
+dns.setDefaultResultOrder('ipv4first')
+
 import rateLimit from 'express-rate-limit'
 import { pinoHttp } from 'pino-http'
 import { logger } from './utils/logger.js'
